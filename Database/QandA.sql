@@ -92,4 +92,14 @@ INSERT INTO Answer(aid,uid,qid,abody,atime,likes) VALUES('A05','U04','Q03','Alth
 INSERT INTO Answer(aid,uid,qid,abody,atime,likes) VALUES('A06','U02','Q03',' It’s hard to measure exactly what makes a good software developer. But what we can do is explore common characteristics and traits..','2014-12-07 09:18:54',238);
 
 
+-- Request Query Insertion
+INSERT INTO User(uid,username,password,profile,points,email,city,state,country) 
+VALUES ('U06','ycfszd897','qazxsw123','SH to NYC chemist',0,'whoever@idk.com','Manhatton','New York','USA');
+
+INSERT INTO Topic(tid,title,higher_level_tid) VALUES('T3','Chemisty',Null);
+INSERT INTO Topic(tid,title,higher_level_tid) VALUES('T31','Thermochemisty','T2');
+
+INSERT INTO Question(qid,uid,tid,title,qbody,qtime,followcount,resolved,bestAid) 
+VALUES('Q04','U06','T31','What is the future research area in thermo chem?','Thermo chem is a disciplinary field between phsics and chemistry...','2020-10-21 18:27:23',20,0,NULL);
+
 
