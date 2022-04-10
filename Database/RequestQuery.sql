@@ -21,26 +21,30 @@ VALUES('Q04','U06','T31','What is the future research area in thermo chem?','The
 -- based on their answers and your own chosen criteria for defining the status.
 
 -- Point trigger
+-- Drop TRIGGER pointUpdate;
+
 DELIMITER $$
 create trigger pointUpdate
-after insert or update on Answer
+after UPDATE on Answer
 FOR EACH ROW
 BEGIN
-	declare checkaid varchar(3);
-
+	DECLARE checkaid varchar(10);
+    
     select bestAid into checkaid
     from Answer A, Question Q
-    where Q.qid = new.qid
-    if (new.aid == checkaid)
+    where Q.qid = new.qid;
+    
+    if (new.aid = checkaid)
     then
         update User
            set points = points + (new.likes * 1.25) - old.likes
-         where uid = new.uid
+         where uid = new.uid;
     else
         update User
            set points = points + new.likes - old.likes
-         where uid = new.uid
-end;
+         where uid = new.uid;
+    END IF;
+END
 $$
 DELIMITER ;
 
@@ -59,11 +63,11 @@ From User
 -- Q4
 -- For a given question (say identified by an ID), output all answers to the question in chronological order from first to last. 
 -- Output the answer text and the time and date when it was posted, and whether an answer was selected as best answer.
-Set givenqid = 'Q03'
 
-Select A.aid, A.abody, A.atime, if(Q.bestAid == A.aid, "Best Answer", "Not Best Answer") as BestorNot
+-- Given QID is "Q03"
+Select A.aid, A.abody, A.atime, if(Q.bestAid = A.aid, "Best Answer", "Not Best Answer") as BestorNot
 From Answer as A, Question as Q
-Where A.qid = Q.qid and A.qid = givenqid 
+Where A.qid = Q.qid and A.qid = "Q03"
 Order by A.atime;
 
 -- Q5
@@ -76,17 +80,27 @@ Where Q.qid = A.qid
 Group by Q.tid;
 
 -- Q6
--- Given a keyword query, output
+-- Given a keyword query, output all questions that match the query and that fall into a particular topic,
+-- sorted from highest to lowest relevance. (Select and define a suitable form of relevance – you could
+-- match the keywords against the query title, the query text, or the query answers, and possibly give
+-- different weights to these different fields.)
+-- Special word is "to"
+
+-- DROP VIEW checkAnswer;
+-- DROP VIEW checkQuestion;
+
 Create view checkAnswer as
-select A.qid, count (A.aid) as CNT 
+select A.qid, count(A.aid) as ACNT 
 From Answer A, Question Q
 Where A.qid = Q.qid and A.abody like "%to%"
-Group by A.qid
+Group by A.qid;
 
+Create view checkQuestion as 
 select Q.qid,
-(if(Q.title like "%function%",10,0) 
-+ if(Q.qbody like "%function%", 5,0) 
-+ () as RelevenceVal
-From Question Q, checkAnswer C
-Where Q.qid = C.qid
-Order by RelevenceVal DESC
+(if(Q.title like "%to%",10,0) 
++ if(Q.qbody like "%to%", 5,0)) as QCNT
+From Question Q;
+
+Select Q.qid, (A.ACNT + Q.QCNT) as Relevenceval
+From checkAnswer A, checkQuestion Q
+Where A.qid = Q.qid;
