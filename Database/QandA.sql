@@ -102,4 +102,12 @@ INSERT INTO Topic(tid,title,higher_level_tid) VALUES('T31','Thermochemisty','T2'
 INSERT INTO Question(qid,uid,tid,title,qbody,qtime,followcount,resolved,bestAid) 
 VALUES('Q04','U06','T31','What is the future research area in thermo chem?','Thermo chem is a disciplinary field between phsics and chemistry...','2020-10-21 18:27:23',20,0,NULL);
 
+INSERT INTO Answer(aid,uid,qid,abody,atime,likes)
+VALUES ('A07','U02','Q04','Knowledge of the thermochemistry of molecules is of major importance in the chemical sciences and is essential to many technologies. Thermochemical data provide information on stabilities and reactivities of molecules that are used, for example, in modeling reactions occurring in combustion, the atmosphere, and chemical vapor deposition.','2021-03-13 14:21:22',233);
+INSERT INTO Answer(aid,uid,qid,abody,atime,likes)
+VALUES ('A08','U04','Q04','Thermochemical data are a key factor in the safe and successful scale-up of chemical processes in the chemical industry. Despite compilations of experimental thermochemical data for many molecules, there are numerous species for which there are no data. In addition, the data in the compilations are sometimes incorrect.','2021-04-13 14:21:22', 356);
+INSERT INTO Answer(aid,uid,qid,abody,atime,likes)
+VALUES ('A09','U05','Q04','Among the challenges will be extension of the methods to larger molecules, increased accuracy in predictions, and extension to heavier elements. The increase in computing power obtainable from new generations of computers, such as those with massively parallel architectures, will play an important role in meeting these challenges.','2021-05-13 14:21:22', 700);
+
+
 

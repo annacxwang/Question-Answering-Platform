@@ -48,6 +48,32 @@ END
 $$
 DELIMITER ;
 
+DELIMITER $$
+create trigger pointInsert
+after INSERT on Answer
+FOR EACH ROW
+BEGIN
+	DECLARE checkaid varchar(10);
+    
+    select bestAid into checkaid
+    from Answer A, Question Q
+    where Q.qid = new.qid;
+    
+    if (new.aid = checkaid)
+    then
+        update User
+           set points = points + (new.likes * 1.25)
+         where uid = new.uid;
+    else
+        update User
+           set points = points + new.likes
+         where uid = new.uid;
+    END IF;
+END
+$$
+DELIMITER ;
+
+
 -- Output Status
 -- Create TEMPORARY table TStatus
 -- Select uid, points
@@ -68,7 +94,7 @@ From User
 Select A.aid, A.abody, A.atime, if(Q.bestAid = A.aid, "Best Answer", "Not Best Answer") as BestorNot
 From Answer as A, Question as Q
 Where A.qid = Q.qid and A.qid = "Q03"
-Order by A.atime;
+Order by A.atime DESC;
 
 -- Q5
 -- For each topic in the topic hierarchy, 
@@ -103,4 +129,5 @@ From Question Q;
 
 Select Q.qid, (A.ACNT + Q.QCNT) as Relevenceval
 From checkAnswer A, checkQuestion Q
-Where A.qid = Q.qid;
+Where A.qid = Q.qid
+Order by Relevenceval DESC;
