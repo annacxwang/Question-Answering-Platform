@@ -1,10 +1,10 @@
 --
 -- Drop any if already present
 --
-drop table if exists User CASCADE;
-drop table if exists Question CASCADE;
-drop table if exists Answer CASCADE;
-drop table if exists Topic CASCADE;
+drop table if exists User ;
+drop table if exists Question ;
+drop table if exists Answer ;
+drop table if exists Topic ;
 
 --
 -- Create the Tables
@@ -15,7 +15,7 @@ Create table User(
     username varchar(124) not null,
     password varchar(24) not null,
     profile varchar(2000),
-    points integer not null,
+    points integer not null default 0,
     email varchar(50) not null,
     city varchar(20),
     state varchar(20),
@@ -35,7 +35,7 @@ Create table Question(
     title varchar(200) not null,
     qbody varchar(500),
     qtime timestamp not null,
-    followcount integer not null,
+    followcount integer not null default 0,
     resolved boolean not null,
     bestAid varchar(3),
     foreign key (uid) references User(uid),
@@ -49,7 +49,7 @@ Create table Answer(
     qid varchar(3) not null,
     abody varchar(2000) not null,
     atime timestamp not null,
-    likes integer not null,
+    likes integer not null default 0,
     foreign key (uid) references User(uid),
     foreign key (qid) references Question(qid)
 );
@@ -108,6 +108,5 @@ INSERT INTO Answer(aid,uid,qid,abody,atime,likes)
 VALUES ('A08','U04','Q04','Thermochemical data are a key factor in the safe and successful scale-up of chemical processes in the chemical industry. Despite compilations of experimental thermochemical data for many molecules, there are numerous species for which there are no data. In addition, the data in the compilations are sometimes incorrect.','2021-04-13 14:21:22', 356);
 INSERT INTO Answer(aid,uid,qid,abody,atime,likes)
 VALUES ('A09','U05','Q04','Among the challenges will be extension of the methods to larger molecules, increased accuracy in predictions, and extension to heavier elements. The increase in computing power obtainable from new generations of computers, such as those with massively parallel architectures, will play an important role in meeting these challenges.','2021-05-13 14:21:22', 700);
-
 
 
