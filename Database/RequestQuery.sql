@@ -98,35 +98,6 @@ END
 $$
 DELIMITER ;
 
-
-
-
-DELIMITER $$
-create trigger pointUpdate
-after UPDATE on Answer
-FOR EACH ROW
-BEGIN
-	DECLARE checkaid integer;
-    
-    select bestAid into checkaid
-    from Question Q
-    where Q.qid = new.qid;
-    
-    if (new.aid = checkaid)
-    then
-        update User
-           set points = points + (new.likes * 1.25) - old.likes
-         where User.uid = new.uid;
-    else
-        update User
-           set points = points + new.likes - old.likes
-         where User.uid = new.uid;
-    END IF;
-END
-$$
-DELIMITER ;
-
-
 -- this trigger will update point at the moment when an answer is selected as the best answer
 
 DROP TRIGGER if exists selectBest;
