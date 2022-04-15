@@ -1,18 +1,19 @@
 --
 -- Drop any if already present
 --
-drop table if exists User ;
-drop table if exists Question ;
-drop table if exists Answer ;
-drop table if exists Topic ;
 
+
+drop table if exists Answer ;
+drop table if exists Question ;
+drop table if exists Topic ;
+drop table if exists User ;
 --
 -- Create the Tables
 --
 
 Create table User(
     uid integer primary key auto_increment,
-    username varchar(124) not null,
+    username varchar(124) not null unique,
     password varchar(24) not null,
     profile varchar(2000),
     points integer not null default 0,
@@ -32,12 +33,12 @@ Create table Question(
     qid integer primary key auto_increment,
     uid integer not null,
     tid varchar(3) not null,
-    title varchar(200) not null,
+    title varchar(200) not null unique,
     qbody varchar(500),
-    qtime timestamp not null,
+    qtime timestamp not null default CURRENT_TIMESTAMP,
     followcount integer not null default 0,
-    resolved boolean not null,
-    bestAid varchar(3),
+    resolved boolean not null default 0,
+    bestAid integer,
     foreign key (uid) references User(uid),
     foreign key (tid) references Topic(tid)
 );
@@ -48,8 +49,9 @@ Create table Answer(
     uid integer not null,
     qid integer not null,
     abody varchar(2000) not null,
-    atime timestamp not null,
+    atime timestamp not null default CURRENT_TIMESTAMP,
     likes integer not null default 0,
+    
     foreign key (uid) references User(uid),
     foreign key (qid) references Question(qid)
 );
@@ -77,9 +79,9 @@ INSERT INTO Topic(tid,title,higher_level_tid) VALUES('T21','Theoretical Physics'
 --
 -- Questions
 --
-INSERT INTO Question(uid,tid,title,qtime,followcount,resolved,bestAid) VALUES(1,'T21','What exactly are sub-atomic particles?','2009-03-11 09:22:33',233,1,'A01');
-INSERT INTO Question(uid,tid,title,qbody,qtime,followcount,resolved,bestAid) VALUES(5,'T11','If advanced algorithms and data structures are never used in industry, then why learn them?','From my experience, advanced... ','2013-09-21 17:22:33',566,1,'A03');
-INSERT INTO Question(uid,tid,title,qbody,qtime,followcount,resolved) VALUES(5,'T12','What are the qualities of a good software developer?','As a CS student, I have always wanted..','2014-09-21 21:22:33',333,0);
+INSERT INTO Question(uid,tid,title,qtime,followcount,resolved,bestAid) VALUES(1,'T21','What exactly are sub-atomic particles?','2009-03-11 09:22:33',233,1,1);
+INSERT INTO Question(uid,tid,title,qbody,qtime,followcount,resolved,bestAid) VALUES(5,'T11','If advanced algorithms and data structures are never used in industry, then why learn them?','From my experience, advanced... ','2013-09-21 17:22:33',566,1,3);
+INSERT INTO Question(uid,tid,title,qbody,qtime,followcount) VALUES(5,'T12','What are the qualities of a good software developer?','As a CS student, I have always wanted..','2014-09-21 21:22:33',333);
 
 --
 -- Answers
@@ -93,14 +95,17 @@ INSERT INTO Answer(uid,qid,abody,atime,likes) VALUES(2,3,' It’s hard to measur
 
 
 -- Request Query Insertion
+
 INSERT INTO User(username,password,profile,email,city,state,country) 
 VALUES ('ycfszd897','qazxsw123','SH to NYC chemist','whoever@idk.com','Manhatton','New York','USA');
 
-INSERT INTO Topic(tid,title) VALUES('T3','Chemisty');
-INSERT INTO Topic(tid,title,higher_level_tid) VALUES('T31','Thermochemisty','T2');
 
-INSERT INTO Question(uid,tid,title,qbody,qtime,followcount,resolved) 
-VALUES(6,'T31','What is the future research area in thermo chem?','Thermo chem is a disciplinary field between phsics and chemistry...','2020-10-21 18:27:23',20,0);
+INSERT INTO Topic(tid,title) VALUES('T3','Chemisty');
+INSERT INTO Topic(tid,title,higher_level_tid) VALUES('T31','Thermochemisty','T3');
+
+
+INSERT INTO Question(uid,tid,title,qbody,qtime,followcount) 
+VALUES(6,'T31','What is the future research area in thermo chem?','Thermo chem is a disciplinary field between phsics and chemistry...','2020-10-21 18:27:23',20);
 
 INSERT INTO Answer(uid,qid,abody,atime,likes)
 VALUES (2,4,'Knowledge of the thermochemistry of molecules is of major importance in the chemical sciences and is essential to many technologies. Thermochemical data provide information on stabilities and reactivities of molecules that are used, for example, in modeling reactions occurring in combustion, the atmosphere, and chemical vapor deposition.','2021-03-13 14:21:22',233);
