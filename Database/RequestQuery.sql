@@ -110,8 +110,7 @@ BEGIN
     
         DECLARE buid integer;
         DECLARE blikes integer;
-    if(new.bestAid is not null)
---    if((old.bestAid is null or (old.bestAid is not null and old.bestAid != new.bestAid)) and (new.bestAid is not null))
+    if(old.bestAid != new.bestAid and new.bestAid is not null)
     then
         select uid,likes into buid,blikes
         from Answer
@@ -120,7 +119,6 @@ BEGIN
         update User
         set points = points + 0.25 * blikes
         where User.uid = buid;
-
     END IF;
 END
 $$
