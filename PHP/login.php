@@ -28,8 +28,7 @@ else
             $stmt->bind_param("ss", $_POST["username"], $_POST["password"]);
             $stmt->execute();
             $stmt->store_result();
-            $stmt->bind_result($uid);
-            echo "ouside second if";
+            $stmt->bind_result($uid, $username, $password);
             //if there is a match set session variables and send user to homepage
             
             if ($stmt->fetch()) 
@@ -38,10 +37,7 @@ else
                 $_SESSION["username"] = $username;
                 $_SESSION["password"] = $password;
                 $_SESSION["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"]; //store clients IP address to help prevent session hijack
-                echo "Login successful. <br />";
-                // $userid = $_SESSION["uid"];
-                // echo "user id is $userid <br />";
-
+            
                 // echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.";
                 header("refresh: 1; index.php");
             }

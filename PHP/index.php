@@ -12,9 +12,6 @@ $userid = $_SESSION["uid"];
 $loginusername = $_SESSION["username"];
 // $loginpassword = $_SESSION["password"];
 
-// general view page
-echo "user id is $userid";
-
 if(!isset($userid)) 
 {
   echo "Welcome to the Questionary web, you are not logged in. <br />"; 
@@ -34,7 +31,7 @@ else
         <a href=\"userProfile.php?uid=$uid\"> user profile </a>, <br />
         You may
         <a href=\"postQuestion.php?uid=$uid\">post question</a>, <br /> 
-        <br /><br /> 
+        <br />
         <a href=\"logout.php\"> logout </a>. <br /> ";
 }
 

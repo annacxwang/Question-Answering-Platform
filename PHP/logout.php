@@ -4,9 +4,14 @@
 <title>Logout</title>
 
 <?php
+session_start();
+unset($_SESSION["uid"]);
+unset($_SESSION["username"]);
+unset($_SESSION["password"]);
 session_destroy();
-echo "You are logged out. You will be redirected in 3 seconds";
-  header("refresh: 3; index.php");
+
+echo "You are logged out. You will be redirected";
+  header("refresh: 1; index.php");
 ?>
 
 </html>
