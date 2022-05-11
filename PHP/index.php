@@ -35,10 +35,15 @@ else
         <a href=\"logout.php\"> logout </a>. <br /> ";
 }
 
-// view infomation
+
 echo "<br /><br />\n";
-echo "You may search the question here";
-echo "You may browse the question";
+echo "<form action=\"search.php?keyword=".$_GET["keyword"]." method=\"post\">
+<input type=\"text\" name=\"keyword\" placeholder=\"Enter Search Keyword...\">
+<input type=\"submit\" value=\"Search\">
+</form> \n";
+echo "<a href=\"browse.php\"> Browse by Topic </a> <br />";
+
+// view infomation
 echo "You may view question here";
 
 ?>
