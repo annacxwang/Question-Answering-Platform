@@ -31,7 +31,8 @@ else
             $stmt->bind_result($uid);
             echo "ouside second if";
             //if there is a match set session variables and send user to homepage
-            if ($stmt->num_rows = 1) 
+            
+            if ($stmt->fetch()) 
             {
                 $_SESSION["uid"] = $uid;
                 $_SESSION["username"] = $username;
