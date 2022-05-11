@@ -5,8 +5,9 @@
 
 <?php
 
-include ("include.php");
+include ("connectdb.php");
 
+$sql1 = "select uid, username, password from User where username = ? and password = ?";
 
 //if the user is already logged in, redirect them back to homepage
 if(isset($_SESSION["username"])) 
@@ -22,21 +23,23 @@ else
     {
   
       //check if entry exists in database
-        if ($stmt = $mysqli->prepare("select * from users where username = ? and password = ?")) 
+        if ($stmt = $mysqli->prepare($sql1)) 
         {
-            $stmt->bind_param("ss", $_POST["username"], md5($_POST["password"]));
+            $stmt->bind_param("ss", $_POST["username"], $_POST["password"]);
             $stmt->execute();
-            $stmt->bind_result($user_id, $username, $password);
+            $stmt->store_result();
+            $stmt->bind_result($uid);
           //if there is a match set session variables and send user to homepage
             if ($stmt->fetch()) 
             {
-                $_SESSION["user_id"] = $user_id;
+                session_start();
+                $_SESSION["uid"] = $uid;
                 $_SESSION["username"] = $username;
                 $_SESSION["password"] = $password;
                 $_SESSION["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"]; //store clients IP address to help prevent session hijack
-                echo "Login successful. \n";
-                echo "You will be redirected in 3 seconds or click <a href=\"index.php\">here</a>.";
-                header("refresh: 3; index.php");
+                echo "Login successful. <br />";
+                //echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.";
+                header("refresh: 1; index.php");
             }
           //if no match then tell them to try again
             else 
@@ -51,18 +54,12 @@ else
     //if not then display login form
     else 
     {
-        echo "Enter your username and password below: <br /><br />\n";
-        echo '<form action="login.php" method="POST">';
-        echo "\n";
-        echo 'Username: <input type="text" name="username" /><br />';
-        echo "\n";
-        echo 'Password: <input type="password" name="password" /><br />';
-        echo "\n";
-        echo '<input type="submit" value="Submit" />';
-        echo "\n";
-        echo '</form>';
-        echo "\n";
-        echo '<br /><a href="index.php">Go back</a>';
+        echo "Enter your username and password below:<br />";
+        echo "<form action=\"login.php\" method= \"POST\">";
+        echo "Username: <input type=\"text\" name=\"username\" /><br />";
+        echo "Password: <input type=\"password\" name= \"password\" /><br />";
+        echo "<input type=\"submit\" value= \"Submit\" /> <br />";
+        echo "<a href=\"index.php\">Go back</a>";
     }
 }
 ?>
