@@ -44,7 +44,31 @@ echo "<form action=\"search.php?keyword=".$_GET["keyword"]." method=\"post\">
 echo "<a href=\"browse.php\"> Browse by Topic </a> <br />";
 
 // view infomation
-echo "You may view question here";
+echo "You may view 10 most recent questions here";
+
+$questions = $mysqli->prepare("Select Q.tid,T.title,Q.qid, Q.title, qtime,followcount 
+            from Question Q,Topic T where Q.tid = T.tid order by qtime DESC limit 10");
+  if(!$questions->execute()){
+      echo "Error description: ".($questions -> error)."Returning to index page...";
+      header("refresh: 2; index.php");
+    };
+  $questions->bind_result($qtid,$topic,$qid, $title, $time,$follow);
+    if(!$questions->fetch()){
+        echo "<div>No question posted yet!</div>";
+          }
+       else{
+                // Printing results in HTML
+       echo "<table>\n";
+      // table header + first line
+      echo "<th>Topic</th><th>Title</th><th>Post Time</th><th>Follow Count</th></tr>\n";
+      echo "<tr><td><a href=\"browse.php?tid=$qtid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow<td></tr>\n";
+      // table body
+      while ($questions->fetch()) {
+          echo "<tr><td><a href=\"browse.php?tid=$qtid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow<td></tr>\n";
+                }
+      echo "</table>\n";
+              }
+      $questions->close();
 
 ?>
 
