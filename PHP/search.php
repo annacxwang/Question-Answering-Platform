@@ -112,20 +112,20 @@ if(isset($_GET["keyword"])){
 
     if($sort == "late"){
         //echo "late to old";
-        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime 
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime,followcount 
         From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic 
         Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by qtime DESC");
     }
     else if ($sort =="old"){
         //echo "old to late";
-        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime 
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime, followcount
         From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic
         Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by qtime ");
     }
     else{
-        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime  
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime,followcount
         From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic
         Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by (A.ACNT + Q.QCNT) DESC");
@@ -134,20 +134,20 @@ if(isset($_GET["keyword"])){
         echo "Error description: ".($answerView -> error)."Returning to index page...";
         header("refresh: 2; index.php");
     };
-    $stmt->bind_result($tid,$topic,$qid, $title, $time);
+    $stmt->bind_result($tid,$topic,$qid, $title, $time,$follow);
 
     if(!$stmt->fetch()){
-        echo "\nNo result mathing keyword ".$keyword;
+        echo "<div>No result matching keyword \"".$keyword."\"</div>";
         }
     else{
         // Printing results in HTML
         echo "<table>\n";
         // table header + first line
-        echo "<th>Topic</th><th>Title</th><th>Post Time</th></tr>\n";
-        echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td></tr>\n";
+        echo "<th>Topic</th><th>Title</th><th>Post Time</th><th>Follow Count</th></tr>\n";
+        echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow<td></tr>\n";
         // table body
         while ($stmt->fetch()) {
-            echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td></tr>\n";
+            echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow</td></tr>\n";
         }
         echo "</table>\n";
     }
