@@ -44,25 +44,34 @@
 <?php
 include ("connectdb.php");
 $keyword = $_GET["keyword"];
+$suid = $_SESSION["uid"];
+$loginusername = $_SESSION["username"];
+
+
+if(!isset($suid)){
+    echo"<div><a href=\"login.php\">login</a> 
+    <a href=\"register.php\">register</a> </div>";
+}
+else{
+    echo"<div>Welcome, <a href=\"userProfile.php?uid=$uid\"> $loginusername </a></div>";
+    echo "<div><a href=\"logout.php\"> Logout </a></div>";
+}
 
 echo"<h1>Search result of \"".$keyword."\" </h1>";
 
 $sort = $_GET["sort"];
 
-////if(isset($sort)){
-    if($sort == "old"){
-        $selected = "Post time: Oldest to Latest";
+
+if($sort == "old"){
+    $selected = "Post time: Oldest to Latest";
     }
-    else if ($sort == "late"){
-        $selected = "Post time: Latest to Oldest";
+else if ($sort == "late"){
+    $selected = "Post time: Latest to Oldest";
     }
-    else{
-        $selected = "Relavance: High to Low";
+else{
+    $selected = "Relavance: High to Low";
     }
-//}
-//else{
-  //  $selected = "Relavance: High to Low";
-//}
+
 
 echo "Sort by:<div class=\"dropdown\">
 <button class=\"dropbtn\">".$selected."</button>

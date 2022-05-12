@@ -13,8 +13,21 @@
 <?php
 include ("connectdb.php");
 $tid = $_GET["tid"];
+$suid = $_SESSION["uid"];
+$loginusername = $_SESSION["username"];
+
+if(!isset($suid)){
+    echo"<div><a href=\"login.php\">login</a> 
+    <a href=\"register.php\">register</a> </div>";
+}
+else{
+    echo"<div>Welcome, <a href=\"userProfile.php?uid=$uid\"> $loginusername </a></div>";
+    echo "<div><a href=\"logout.php\"> Logout </a></div>";
+}
 
 if(isset($tid)){
+    
+
     $topicDetail = $mysqli->prepare("Select title,higher_level_tid from Topic where tid = ?");
     $topicDetail->bind_param('s',$tid);
 
