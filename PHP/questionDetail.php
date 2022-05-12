@@ -64,7 +64,7 @@ if(isset($qid)){
         <a href=\"register.php\">register</a> </div>";
     }
     else{
-        echo"<div>Welcome, <a href=\"userProfile.php?uid=$uid\"> $loginusername </a></div>";
+        echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div>";
         echo "<div><a href=\"logout.php\"> Logout </a></div>";
     }
     echo"detail of question $qid ";
@@ -226,6 +226,18 @@ if(isset($qid)){
             <input type=\"submit\" name=\"liked$aid\"
                     value=\"$likeText $likes\"/>
              ";
+
+             //show delete button if posted by current user
+
+             if($suid == $uid){
+                //echo "<form method=\"post\"><button name=\"delAns\" type=\"submit\" value=\"$aid\">Delete</button></form>";
+                echo "<div><form class =\"bts\" method=\"post\">
+            <input type=\"submit\" name=\"delete$aid\"
+                    value=\"Delete\"/>";
+            }
+
+
+
              while($answers->fetch()){
                 $aidArr[$count] = $aid;
                 $likesArr[$count] = $likes;
@@ -246,15 +258,26 @@ if(isset($qid)){
                 <input type=\"submit\" name=\"liked$aid\"
                         value=\"$likeText $likes\"/>
                  ";
+                 //show delete button if posted by current user
+
+             if($suid == $uid){
+                //echo "<form method=\"post\"><button name=\"delAns\" type=\"submit\" value=\"$aid\">Delete</button></form>";
+                echo "<div><form class =\"bts\" method=\"post\">
+            <input type=\"submit\" name=\"delete$aid\"
+                    value=\"Delete\"/>";
+            }
 
              }
 
         }
         $answers->close();
         //echo "$count";
+
+
         for($x = 0; $x < $count; $x++){
             $aid = $aidArr[$x];
             $sessionIndex = 'liked'.$aid;
+            $deleteIndex = 'delete'.$aid;
             //echo "session is $sessionIndex";
         if (isset($_POST[$sessionIndex])){
             //echo"follow clicked";
@@ -283,6 +306,18 @@ if(isset($qid)){
                 echo "<script>alert('Log in required to like!');</script>";
             }}
         }
+        else if (isset($_POST[$deleteIndex])){
+            //echo "delete clicked";
+            echo "delete from Answer where aid= $aid";
+            $deleteAns = $mysqli->prepare("delete from Answer where aid= $aid");
+            if(!$deleteAns->execute()){
+                echo "Error description: ".($deleteAns -> error)."Returning to index page...";
+                //header("refresh: 2; index.php");
+            };
+            $deleteAns->close();
+            header("Refresh:0");
+
+        }
 
         }
 
@@ -290,20 +325,43 @@ if(isset($qid)){
 
     //post answer
     if(isset($_SESSION["uid"])){
-        echo "<br /><br />\n";
-        echo "<form method=\"post\">
-        <input type=\"text\" name=\"abody\" placeholder=\"Enter Answer Here...\">
-        <input type=\"submit\" value=\"Post Answer\">
-        </form> ";    
+         
+
+        if(strlen($_POST["abody"])>0) {
+
+            //insert into database, note that aid is auto_increment and atime is set to current_timestamp by default
+            if ($stmt = $mysqli->prepare("insert into Answer (uid, qid,abody) values (?,?,?)")) {
+                $abody = $_POST["abody"];
+                $stmt->bind_param("iis", $suid, $qid ,$abody);
+                $stmt->execute();
+              //echo "$abody \n";
+                $stmt->close();
+              //$user_id = htmlspecialchars($_SESSION["user_id"]);*/
+              //echo "You will be returned to your blog in 3 seconds or click <a href=\"view.php?user_id=$user_id\">here</a>.";
+              header("refresh: 0;");
+            }  
+          }
+          //if not then display the form for posting answer
+          //else {
+            echo "<br /><br />\n";
+            echo "<form method=\"post\">";
+            //echo "<input type=\"text\" name=\"abody\" placeholder=\"Enter Answer Here...\">";
+            echo "<textarea cols=\"40\" rows=\"10\" name=\"abody\" placeholder=\"Enter Answer Here...\"/></textarea>
+            <input type=\"submit\" value=\"Post Answer\">
+            </form> ";  
+        
+          //}
 
     }
-   
+
+
+   /*
 
     if(is_string($_POST["abody"])){
         echo "inside if\n";
         $abody = $_POST["abody"];
         echo $abody;
-        /*
+        
         $stmt = $mysqli->prepare("insert into Answer (uid, qid,abody) values (?,?,?)");
         $stmt->bind_param("iis", $suid, $qid ,$abody);
         if(!$stmt->execute()){
@@ -311,13 +369,16 @@ if(isset($qid)){
             //header("refresh: 2; index.php");
         };
         $stmt->close();
-        */
+        
         $_POST["abody"]=0;
         header("Refresh:1");
         //INSERT INTO Answer(uid,qid,abody) VALUES(1,4,1,'body','2009-03-22 11:44:22',2333);
 
     }
-    
+    //button to go back to index
+    echo"<form action=\"index.php\" method=\"post\">
+    <input type=\"submit\" value=\"Back\">
+    </form>"; */
 
 }
 else{
@@ -326,5 +387,7 @@ else{
 }
 $mysqli->close();
 ?>
-
+<form action="index.php" method="post">
+    <input type="submit" value="Back">
+    </form>
 </html>

@@ -21,7 +21,7 @@ if(!isset($suid)){
     <a href=\"register.php\">register</a> </div>";
 }
 else{
-    echo"<div>Welcome, <a href=\"userProfile.php?uid=$uid\"> $loginusername </a></div>";
+    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div>";
     echo "<div><a href=\"logout.php\"> Logout </a></div>";
 }
 
