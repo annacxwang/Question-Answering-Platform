@@ -36,6 +36,11 @@
                 {
                     $status = "Basic";
                 }
+                
+                echo "<tr>
+                        <td> User points: </td>
+                        <td> $points </td>
+                        </tr>";
                 echo "<tr>
                         <td> User status: </td>
                         <td> $status </td>
@@ -77,9 +82,8 @@
                 while($stmt->fetch())
                 {
                     echo "<tr>";
-                    echo "<td> <a href= \"questionDetail.php?qid=$qid\"> $qid </a> </td> 
-                            <td> $topic </td>
-                            <td> $title </td>
+                    echo "<td> $topic </td>
+                            <td> <a href= \"questionDetail.php?qid=$qid\">$title </a></td>
                             <td> $qbody </td>
                             </tr>";
                 }
@@ -93,16 +97,16 @@
                 echo "Or click <a href=\"index.php?\">here</a> back to the main page. <br />";
             }
         }
-        $sql3 = "select A.aid, A.qid, A.abody, A.atime, U.username
-                    from Answer A, User U
-                    where A.uid = U.uid and A.uid = ? 
+        $sql3 = "select A.aid, A.abody, A.atime, U.username, Q.title
+                    from Answer A, User U, Question Q
+                    where A.uid = U.uid and A.qid = Q.qid and A.uid = ? 
                     order by A.atime DESC";
         if ($stmt = $mysqli->prepare($sql3))
         {
             $stmt->bind_param("s", $userid);
             $stmt->execute();
             $stmt->store_result();
-            $stmt->bind_result($aid, $qid, $abody, $atime, $username);
+            $stmt->bind_result($aid,  $abody, $atime, $username, $title);
             if ($stmt->num_rows > 0)
             {
                 echo "Question answered by $username are listed below, <br />
