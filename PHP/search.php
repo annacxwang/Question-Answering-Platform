@@ -13,7 +13,7 @@
   display: none;
   position: absolute;
   background-color: #f1f1f1;
-  min-width: 160px;
+  min-width: 100px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
 }
@@ -64,7 +64,7 @@ $sort = $_GET["sort"];
   //  $selected = "Relavance: High to Low";
 //}
 
-echo "<div class=\"dropdown\">Sort by:
+echo "Sort by:<div class=\"dropdown\">
 <button class=\"dropbtn\">".$selected."</button>
 <div class=\"dropdown-content\">
   <a href=\"search.php?keyword=".$keyword."&sort=relavance\">Relavance: High to Low</a>
@@ -112,29 +112,29 @@ if(isset($_GET["keyword"])){
 
     if($sort == "late"){
         //echo "late to old";
-        $stmt = $mysqli->prepare("Select Q.qid, title, qtime 
-        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question 
-        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid 
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime 
+        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic 
+        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by qtime DESC");
     }
     else if ($sort =="old"){
         //echo "old to late";
-        $stmt = $mysqli->prepare("Select Q.qid, title, qtime 
-        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question 
-        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid 
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime 
+        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic
+        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by qtime ");
     }
     else{
-        $stmt = $mysqli->prepare("Select Q.qid, title, qtime 
-        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question 
-        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid 
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime  
+        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic
+        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by (A.ACNT + Q.QCNT) DESC");
     }
     if(!$stmt->execute()){
         echo "Error description: ".($answerView -> error)."Returning to index page...";
         header("refresh: 2; index.php");
     };
-    $stmt->bind_result($qid, $title, $time);
+    $stmt->bind_result($tid,$topic,$qid, $title, $time);
 
     if(!$stmt->fetch()){
         echo "\nNo result mathing keyword ".$keyword;
@@ -143,11 +143,11 @@ if(isset($_GET["keyword"])){
         // Printing results in HTML
         echo "<table>\n";
         // table header + first line
-        echo "<th>Title</th><th>Post Time</th></tr>\n";
-        echo "<tr><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td></tr>\n";
+        echo "<th>Topic</th><th>Title</th><th>Post Time</th></tr>\n";
+        echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td></tr>\n";
         // table body
         while ($stmt->fetch()) {
-            echo "<tr><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td></tr>\n";
+            echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td></tr>\n";
         }
         echo "</table>\n";
     }
