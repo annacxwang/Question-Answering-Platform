@@ -37,7 +37,8 @@ else
                 $_SESSION["username"] = $username;
                 $_SESSION["password"] = $password;
                 $_SESSION["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"]; //store clients IP address to help prevent session hijack
-            
+                
+                echo ("login successful");
                 // echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.";
                 header("refresh: 1; index.php");
             }
@@ -59,10 +60,11 @@ else
         echo "Username: <input type=\"text\" name=\"username\" /><br />";
         echo "Password: <input type=\"password\" name= \"password\" /><br />";
         echo "<input type=\"submit\" value= \"Submit\" /> <br />";
-        echo "<a href=\"index.php\">Go back</a>";
     }
 }
 ?>
-  
+<form action="index.php" method="post">
+    <input type="submit" value="Back">
+    </form> 
 
 </html>
