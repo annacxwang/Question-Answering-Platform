@@ -30,7 +30,7 @@ else
   echo "Here is your 
         <a href=\"userProfile.php?uid=$uid\"> user profile </a>, <br />
         You may
-        <a href=\"postQuestion.php?uid=$uid\">post question</a>, <br /> 
+        <a href=\"postQuestion.php?\">post question</a>, <br /> 
         <br />
         <a href=\"logout.php\"> logout </a>. <br /> ";
 }
