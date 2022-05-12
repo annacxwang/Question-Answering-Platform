@@ -50,6 +50,7 @@
                         <td> $profile </td>
                         </tr>
                         </table>";
+                echo "<br /> <br />";
                 $stmt->close();
             }
             else
@@ -72,10 +73,9 @@
             {
                 echo "Questions asked by $username is listed below, <br />
                 you can click on the question id to view the question detail. <br />";
-                echo '<table border="2" width="30%">';
+                echo '<table border="2" width="60%">';
                 echo "<tr>";
-                echo "<th> Question ID </th>
-                        <th> Question topic </th>
+                echo "<th> Question topic </th>
                         <th> Question title </th> 
                         <th> Question body </th>
                         </tr>";
@@ -88,16 +88,23 @@
                             </tr>";
                 }
                 echo "</table>";
+                echo "<br /> <br />";
                 $stmt->close();
             }
             else
             {
                 $stmt->close();
-                echo "No question has been asked, you can post a question by clicking <a href=\"postQuestion.php?\">here</a> <br />";
-                echo "Or click <a href=\"index.php?\">here</a> back to the main page. <br />";
+                echo '<table border="2" width="60%">';
+                echo "<tr> <td>
+                    No question has been asked <br />
+                    you can post a question by clicking <a href=\"postQuestion.php?\">here</a> <br />
+                    Or click <a href=\"index.php?\">here</a> back to the main page. <br />
+                    </td> </tr>";
+                echo "</table>";
+                echo "<br /> <br />";
             }
         }
-        $sql3 = "select A.aid, A.abody, A.atime, U.username, Q.title
+        $sql3 = "select A.qid, A.abody, A.atime, U.username, Q.title
                     from Answer A, User U, Question Q
                     where A.uid = U.uid and A.qid = Q.qid and A.uid = ? 
                     order by A.atime DESC";
@@ -106,33 +113,38 @@
             $stmt->bind_param("s", $userid);
             $stmt->execute();
             $stmt->store_result();
-            $stmt->bind_result($aid,  $abody, $atime, $username, $title);
+            $stmt->bind_result($qid, $abody, $atime, $username, $title);
             if ($stmt->num_rows > 0)
             {
                 echo "Question answered by $username are listed below, <br />
                 you can click on the question id to view the question detail. <br />";
-                echo '<table border="2" width="30%">';
+                echo '<table border="2" width="60%">';
                 echo "<tr>";
-                echo "<th> Answer ID </th>
-                        <th> Belonging question ID </th>
+                echo "<th> Question title</th>
                         <th> Answer body </th>
                         </tr>";
                 while($stmt->fetch())
                 {
                     echo "<tr>";
-                    echo "<td> $aid </td>
-                            <td> <a href= \"questionDetail.php?qid=$qid\"> $qid </a> </td> 
+                    echo "<td> <a href= \"questionDetail.php?qid=$qid\"> $title </a> </td> 
                             <td> $abody </td>
                             </tr>";
                 }
                 echo "</table>";
+                echo "<br /> <br />";
                 $stmt->close();
             }
             else
             {
                 $stmt->close();
-                echo "Haven't answered any question yet <br />";
-                echo "Or click <a href=\"index.php?\">here</a> back to the main page. <br />";
+                echo '<table border="2" width="60%">';
+                echo "<tr> <td>
+                    Haven't answered any question yet <br />
+                    Or click <a href=\"index.php?\">here</a> back to the main page. <br />
+                    </td> </tr>
+                ";
+                echo "</table>";
+                echo "<br /> <br />";
             }
         }
     }
