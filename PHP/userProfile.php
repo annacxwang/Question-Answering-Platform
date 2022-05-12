@@ -45,22 +45,24 @@
                         <td> $profile </td>
                         </tr>
                         </table>";
+                $stmt->close();
             }
             else
             {
+                $stmt->close();
                 echo "No information exist for user with user id $userid";
             }
         }
         $sql2 = "select Q.qid, Q.title, Q.qbody, Q.qtime, T.title, U.username
                     from Question Q, Topic T, User U
-                    where Q.qid = T.tid and Q.uid = U.uid and Q.uid = ? 
+                    where Q.tid = T.tid and Q.uid = U.uid and Q.uid = ? 
                     order by Q.qtime DESC";
         if ($stmt = $mysqli->prepare($sql2))
         {
             $stmt->bind_param("s", $userid);
             $stmt->execute();
             $stmt->store_result();
-            $stmt->bind_result($qid, $qtitle, $qbody, $qtime, $title, $username);
+            $stmt->bind_result($qid, $title, $qbody, $qtime, $topic, $username);
             if ($stmt->num_rows > 0)
             {
                 echo "Questions asked by $username is listed below, <br />
@@ -76,15 +78,17 @@
                 {
                     echo "<tr>";
                     echo "<td> <a href= \"questionDetail.php?qid=$qid\"> $qid </a> </td> 
+                            <td> $topic </td>
                             <td> $title </td>
-                            <td> $qtitle </td>
                             <td> $qbody </td>
                             </tr>";
                 }
                 echo "</table>";
+                $stmt->close();
             }
             else
             {
+                $stmt->close();
                 echo "No question has been asked, you can post a question by clicking <a href=\"postQuestion.php?\">here</a> <br />";
                 echo "Or click <a href=\"index.php?\">here</a> back to the main page. <br />";
             }
@@ -118,9 +122,11 @@
                             </tr>";
                 }
                 echo "</table>";
+                $stmt->close();
             }
             else
             {
+                $stmt->close();
                 echo "Haven't answered any question yet <br />";
                 echo "Or click <a href=\"index.php?\">here</a> back to the main page. <br />";
             }
@@ -130,7 +136,7 @@
         echo "The user did not exist. You will be directed to the main page";
         header("refresh: 1; index.php");
     }
-
+    $mysqli->close();
 
 
 ?>
