@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!--Question and Answer detail page of the Q and A platform -->
 <html>
+<title>Knowledge Universe - Question Detail</title>
 <style>
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
@@ -53,10 +54,10 @@ function computeStatus($pt){
        return "Expert";
     }
     else if ($pt<500){
-        return "Advanced";
+        return "Basic";
     }
     else{
-        return "Intermidiate";
+        return "Advanced";
     }
 }
 
@@ -76,7 +77,8 @@ if(isset($qid)){
         <a href="register.php">register</a> </div>';
     }
     else{
-        echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div>";
+        echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div> 
+        <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
         echo "<div><a href=\"logout.php\"> Logout </a></div>";
 
         //load user session info
@@ -142,12 +144,10 @@ if(isset($qid)){
     else{
         $question->close();
 
-        
-
-        $status = computeStatus($pt);
-        echo "Topic: <a href = \"browse.php?tid=$tid\">$topic</a>";
+        echo "<div>Topic: <a href = \"browse.php?tid=$tid\">$topic</a></div>";
         echo "<h1>$title</h1>";
 
+        //Event Handler for Resolve and follow buttons
         if(isset($_POST['res'])){
             //echo"res clicked";
             $new = 1-$res;
@@ -229,6 +229,7 @@ if(isset($qid)){
             echo("Not resolved");
         }
         echo "<div>$qbody</div>";
+        $status = computeStatus($pt);
         echo "<div>By $status <a href=\"userProfile.php?uid=$uid\">$username</a> Posted @ $qtime</div>";
 
 
@@ -353,35 +354,7 @@ if(isset($qid)){
             else{
                 echo "<script>alert('Log in required to follow!');</script>";
             }
-/*
 
-            if($_SESSION[$sessionIndex] ==1){
-                //echo"follow -> unfollow";
-                //if(isset($_POST['follow'])){
-                    $new = $likesArr[$x]-1;
-                    $update = $mysqli->prepare("Update Answer set likes = $new where aid = $aid");
-                    $update->execute();
-                    $update->close();
-                    $_SESSION[$sessionIndex] = 0;
-                    $_SESSION["refresh"] = 1;
-                    //header("Refresh:0");
-                    echo "<meta http-equiv='refresh' content='0'>";
-                //}
-            } 
-            else if(isset($suid)){
-                    //echo"unfollow -> follow";
-                    $new = $likesArr[$x]+1;
-                    $update = $mysqli->prepare("Update Answer set likes = $new where aid = $aid");
-                    $update->execute();
-                    $update->close();
-                    $_SESSION[$sessionIndex] = 1;
-                    $_SESSION["refresh"] = 1;
-                    //header("Refresh:0");
-                    echo "<meta http-equiv='refresh' content='0'>";
-                }
-            else{
-                echo "<script>alert('Log in required to like!');</script>";
-            }*/
         }
         if (isset($_POST[$deleteIndex])){
             //echo "delete clicked";
@@ -435,32 +408,6 @@ if(isset($qid)){
 
     
 
-
-   /*
-
-    if(is_string($_POST["abody"])){
-        echo "inside if\n";
-        $abody = $_POST["abody"];
-        echo $abody;
-        
-        $stmt = $mysqli->prepare("insert into Answer (uid, qid,abody) values (?,?,?)");
-        $stmt->bind_param("iis", $suid, $qid ,$abody);
-        if(!$stmt->execute()){
-            echo "Error description: ".($stmt -> error)."Returning to index page...";
-            //header("refresh: 2; index.php");
-        };
-        $stmt->close();
-        
-        $_POST["abody"]=0;
-        header("Refresh:1");
-        //INSERT INTO Answer(uid,qid,abody) VALUES(1,4,1,'body','2009-03-22 11:44:22',2333);
-
-    }
-    //button to go back to index
-    echo"<form action=\"index.php\" method=\"post\">
-    <input type=\"submit\" value=\"Back\">
-    </form>"; */
-
 }
 else{
     echo "Question id is not set!\nReturning to index page...";
@@ -468,7 +415,5 @@ else{
 }
 $mysqli->close();
 ?>
-<form action="index.php" method="post">
-    <input type="submit" value="Back">
-    </form>
+<a href = "index.php">Index Page</a>
 </html>

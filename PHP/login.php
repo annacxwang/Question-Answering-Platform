@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- Example Blog written by Raymond Mui -->
+
 <html>
-<title>Q&Atest</title>
+<title>Knowledge Universe - Login</title>
 
 <?php
 
@@ -9,6 +9,19 @@ include ("connectdb.php");
 
 
 $sql1 = "select uid, username, password from User where username = ? and password = ?";
+
+function displayLoginForm($url){
+    echo "Enter your username and password below:<br />";
+        echo "<form action=\"login.php\" method= \"POST\">";
+        echo "Username: <input type=\"text\" name=\"username\" /><br />";
+        echo "Password: <input type=\"password\" name= \"password\" /><br />";
+        echo "<input type = \"hidden\" name = \"url\" value = $url />";
+        echo "<input type=\"submit\" value= \"Submit\" /> <br />";
+        echo " <div>Don't have an account?<a href = \"register.php\">register</a></div>";
+        echo "<div><a href = \"index.php\">Index Page</a></div>";
+}
+
+
 
 //if the user is already logged in, redirect them back to homepage
 if(isset($_SESSION["username"])) 
@@ -22,8 +35,9 @@ if(isset($_SESSION["username"]))
 }
 else 
 {
+    
     //if the user have entered both entries in the form, check if they exist in the database
-    if(isset($_POST["username"]) && isset($_POST["password"])) 
+    if(strlen($_POST["username"])>0 && strlen($_POST["password"])>0) 
     {
   
       //check if entry exists in database
@@ -55,52 +69,35 @@ else
                     header("refresh:1; index.php");
                 }
                  
-               /*
-                 if(isset($uri)){
 
-                    $url = substr($uri, 1);
-                    echo "You will be redirected in 1 seconds or click <a href=\"$url\">here</a>.";
-                    echo $url; 
-                    //header("refresh:1; $url");
-                     //header("refresh:1; $index.php");
-                 }  
-                 else{
-                    echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.";
-                    header("refresh:1; index.php");
-                 }*/
-                //echo $_SERVER['HTTP_REFERER'];
-                //header('Location: '.$_SERVER['HTTP_REFERER']);
             }
           //if no match then tell them to try again
             else 
             {
                 sleep(1); //pause a bit to help prevent brute force attacks
-                echo "Your username or password is incorrect, click <a href=\"login.php\">here</a> to try again.";
+                //echo "Your username or password is incorrect, click <a href=\"login.php\">here</a> to try again.";
+                echo"<script>alert('Your username or password is incorrect!');</script>";
+                $url = $_POST["url"];
+        //echo "to post $url";
+            displayLoginForm($url);
             }
         $stmt->close();
         $mysqli->close();
         }  
     }
+    else if(isset($_POST["url"])){
+        echo"<script>alert('Login Information Incomplete!');</script>";
+        $url = $_POST["url"];
+        //echo "to post $url";
+        displayLoginForm($url);
+    }
     //if not then display login form
     else 
-    {
-        
-        
-        //echo $_SERVER['HTTP_REFERER'];
+    {    
         $url = $_SERVER['HTTP_REFERER'];
-        //echo "to post $url";
-        echo "Enter your username and password below:<br />";
-        echo "<form action=\"login.php\" method= \"POST\">";
-        echo "Username: <input type=\"text\" name=\"username\" /><br />";
-        echo "Password: <input type=\"password\" name= \"password\" /><br />";
-        echo "<input type = \"hidden\" name = \"url\" value = $url />";
-        echo "<input type=\"submit\" value= \"Submit\" /> <br />";
+        displayLoginForm($url);
     }
 }
 ?>
-
-<form action="index.php" method="post">
-    <input type="submit" value="Back">
-    </form> 
 
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- Example Blog written by Raymond Mui -->
+
 <html>
-<title>Logout</title>
+<title>Knowledge Universe - Log Out</title>
 
 <?php
 session_start();

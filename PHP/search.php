@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- Search functionality of the Q and A platform -->
 <html>
+<title>Knowledge Universe - Search Results</title>
     <style>
 
 /* The container <div> - needed to position the dropdown content */
@@ -53,8 +54,9 @@ if(!isset($suid)){
     <a href="register.php">register</a> </div>';
 }
 else{
-    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div>";
-    echo "<div><a href=\"logout.php\"> Logout </a></div>";
+    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div> 
+        <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
+        echo "<div><a href=\"logout.php\"> Logout </a></div>";
 }
 
 echo"<h1>Search result of \"".$keyword."\" </h1>";
@@ -121,23 +123,23 @@ if(isset($_GET["keyword"])){
 
     if($sort == "late"){
         //echo "late to old";
-        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime,followcount 
-        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic 
-        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime,followcount
+        From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic
+        Where (ifnull(A.ACNT,0) + ifnull(Q.QCNT,0)) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by qtime DESC");
     }
     else if ($sort =="old"){
         //echo "old to late";
-        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime, followcount
+        $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime,followcount
         From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic
-        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
+        Where (ifnull(A.ACNT,0) + ifnull(Q.QCNT,0)) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
         Order by qtime ");
     }
     else{
         $stmt = $mysqli->prepare("Select Topic.tid,Topic.title,Q.qid, Question.title, qtime,followcount
         From (checkAnswer A right join checkQuestion Q on A.qid = Q.qid), Question, Topic
-        Where (A.ACNT + Q.QCNT) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
-        Order by (A.ACNT + Q.QCNT) DESC");
+        Where (ifnull(A.ACNT,0) + ifnull(Q.QCNT,0)) != 0 and Question.qid = Q.qid and Question.tid = Topic.tid
+        Order by (ifnull(A.ACNT,0) + ifnull(Q.QCNT,0)) DESC");
     }
     if(!$stmt->execute()){
         echo "Error description: ".($answerView -> error)."Returning to index page...";
@@ -164,9 +166,7 @@ if(isset($_GET["keyword"])){
     $stmt->close();
     $mysqli->close();
 
-    echo"<form action=\"index.php\" method=\"post\">
-    <input type=\"submit\" value=\"Back\">
-    </form>";
+    echo '<a href = "index.php">Index Page</a>';
 }
 else{
     echo "Search keyword is not set!\nReturning to index page...";

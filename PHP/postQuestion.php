@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<!-- Example Blog written by Raymond Mui -->
+
 <html>
-<title>Questionary Website Example</title>
+<title>Knowledge Universe - Post Question</title>
 
 <?php
     include ("connectdb.php");
     $userid = $_SESSION["uid"];
+    $loginusername = $_SESSION["username"];
     //$loginusername = $_SESSION["username"];
     // $loginpassword = $_SESSION["password"];
     date_default_timezone_get();
 
     if(isset($userid)) 
     {
+        echo"<div>Welcome, <a href=\"userProfile.php?uid=$userid\"> $loginusername </a></div> ";
+        echo "<div><a href=\"logout.php\"> Logout </a></div>";
+
         if (!empty($_POST["title"]) && !empty($_POST["qbody"]) && !empty($_POST["tid"]))
         {
             $date = date('Y-m-d H:i:s');
@@ -59,7 +63,7 @@
             echo "</select> <br />";
                     
             echo "<input type=\"submit\" value= \"Submit\" /> <br />";
-            echo"<br /> Reference topic id is shown below <br />";
+            //echo"<br /> Reference topic id is shown below <br />";
         }  
     }
     else
@@ -70,8 +74,6 @@
 
 
 ?>
-<form action="index.php" method="post">
-    <input type="submit" value="Back">
-    </form>
+<a href = "index.php">Index Page</a>
 
 </html>

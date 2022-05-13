@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- Example Blog written by Raymond Mui -->
+<!-- Register page of the Q and A platform -->
 <html>
-<title>Questionary Website Example</title>
+<title>Knowledge Universe - Register</title>
 
 <?php
     include ("connectdb.php");
@@ -11,36 +11,48 @@
 
             //preset values
     if (empty($_POST["profile"])){
-        $userprofile = "null";
+        $userprofile = NULL;
     }
     else{
         $userprofile = $_POST["profile"];
     }
-    if (empty($_POST["email"])){
-        $useremail = "null";
-    }
-    else{
-        $useremail = $_POST["email"];
-    }
+
     if (empty($_POST["city"])){
-        $usercity = "null";
+        $usercity = NULL;
     }
     else{
         $usercity = $_POST["city"];
     }
     if (empty($_POST["state"])){
-        $userstate = "null";
+        $userstate = NULL;
     }
     else{
         $userstate = $_POST["state"];
     }
     if (empty($_POST["country"])){
-        $usercountry = "null";
+        $usercountry = NULL;
     }
     else{
         $usercountry = $_POST["country"];
     }
     
+
+    function displayRegistrationForm(){
+        echo "Enter your information below:(the ones with '*' are required fields)<br /> <br />\n";
+        echo "<form action=\"register.php\" method=\"POST\">";
+        echo "Username(*): <input type=\"text\" name=\"username\" /> <br />
+                    Password(*): <input type=\"password\" name= \"password\" /> <br />
+                    Discription: <input type=\"text\" name= \"profile\" /> <br />
+                    Email(*): <input type=\"text\" name= \"email\" placeholder =\"abc@example.com\"/> <br />
+                    City: <input type=\"text\" name= \"city\" /> <br />
+                    State: <input type=\"text\" name= \"state\" /> <br />
+                    Country: <input type=\"text\" name= \"country\" /> <br />
+                    <input type = \"hidden\" name =\"clicked\" />";
+        echo "<input type=\"submit\" value= \"Register\" /> <br />";
+        echo " <div>Already have an account?<a href = \"login.php\">login</a></div>";
+        echo '<a href ="index.php">Index Page</a>'; 
+    }
+
     if(isset($loginusername)) 
     {
         echo "You are already logged in. \n";
@@ -49,10 +61,9 @@
     }
     else
     {
-        //if the user have entered _all_ entries in the form, insert into database
-
-        if(!empty($_POST["username"]) && !empty($_POST["password"])) 
-        {
+        //if the user have entered _all_ entries in the form, insert into database    
+        if(!empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["email"])) 
+        {   
             $sql1 = "select uid from User where username = ?";
             //check if username already exists in database
             //$stmt = $mysqli->prepare($sql1);
@@ -65,9 +76,10 @@
                 $stmt->fetch();
                 if ($stmt->num_rows > 0) 
                 {
-                    echo "Username existed, please select a new username!";
-                    header("refresh: 1; register.php");
                     $stmt->close();
+                    echo"<script>alert('User name already taken!');</script>";
+                    displayRegistrationForm();
+                    
                 }
                 //if not then insert the entry into database, note that uid is set by auto_increment
                 else 
@@ -83,39 +95,37 @@
                                 $_POST["username"],
                                 $_POST["password"], 
                                 $userprofile,
-                                $useremail,
+                                $_POST["email"],
                                 $usercity,
                                 $userstate,
                                 $usercountry);
                         $stmt->execute();
                         $stmt->store_result();
                         $stmt->close();
-                        echo "Registration complete, click <a href=\"index.php\">here</a> to return to homepage.";
-                        header("refresh: 1; index.php"); 
+
+                    echo "Registration complete, click <a href=\"index.php\">here</a> to return to homepage.";
+                    header("refresh:1; index.php");
+                    
                     }		  
                 }	 
             }
         
         }
+        /*else if(!empty($_POST["email"])){
+            echo"<script>alert('Enter valid email address');</script>";
+            displayRegistrationForm();
+        }*/
+        else if(isset($_POST["clicked"])){
+            echo"<script>alert('Required fields Incomplete!');</script>";
+            displayRegistrationForm(); }
         else
-        {
-            echo "Enter your information below: <br /> <br />\n";
-            echo "<form action=\"register.php\" method=\"POST\">";
-            echo "Username: <input type=\"text\" name=\"username\" /> <br />
-                    Password: <input type=\"password\" name= \"password\" /> <br />
-                    Discription: <input type=\"text\" name= \"profile\" /> <br />
-                    Email: <input type=\"text\" name= \"email\" /> <br />
-                    City: <input type=\"text\" name= \"city\" /> <br />
-                    State: <input type=\"text\" name= \"state\" /> <br />
-                    Country: <input type=\"text\" name= \"country\" /> <br />";
-            echo "<input type=\"submit\" value= \"Submit\" /> <br />"; 
+        {  
+            displayRegistrationForm();
         }
     }
 
     $mysqli->close();
 
 ?>
-<form action="index.php" method="post">
-    <input type="submit" value="Back">
-    </form>
+
 </html>

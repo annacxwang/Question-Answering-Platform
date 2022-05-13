@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- Example Blog written by Raymond Mui -->
+
 <html>
-<title>Questionary Website Example</title>
+<title>Knowledge Universe - Index</title>
 
 <?php
 
@@ -14,25 +14,30 @@ $loginusername = $_SESSION["username"];
 
 if(!isset($userid)) 
 {
-  echo "Welcome to the Questionary web, you are not logged in. <br />"; 
+  /*echo "Welcome to the Questionary web, you are not logged in. <br />"; 
   echo "In order to post or follow a question or like an answer you need to 
         <a href=\"login.php\">login</a> 
         or 
         <a href=\"register.php\">register</a> 
-        if you don't have an account yet.";
+        if you don't have an account yet.";*/
+        echo'<div><a href="login.php">login</a> 
+        <a href="register.php">register</a> </div>';
 }
 // logged in user view page
 else 
 {
-  $username = htmlspecialchars($loginusername);
-  $uid = htmlspecialchars($userid);
-  echo "Welcome $username. You are logged in. <br />";
+  //$username = htmlspecialchars($loginusername);
+  //$uid = htmlspecialchars($userid);
+/*  echo "Welcome $username. You are logged in. <br />";
   echo "Here is your 
         <a href=\"userProfile.php?uid=$userid\"> user profile </a>, <br />
         You may
-        <a href=\"postQuestion.php?\">post question</a>, <br /> 
+        
         <br />
-        <a href=\"logout.php\"> logout </a>. <br /> ";
+        <a href=\"logout.php\"> logout </a>. <br /> ";*/
+        echo"<div>Welcome, <a href=\"userProfile.php?uid=$userid\"> $loginusername </a></div> 
+        <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
+        echo "<div><a href=\"logout.php\"> Logout </a></div>";
 }
 
 

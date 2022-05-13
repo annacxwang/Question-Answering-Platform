@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!--browse by subject page of the Q and A platform -->
+<!--browse by topic page of the Q and A platform -->
 <html>
-
+<title>Knowledge Universe - Browse By Topic</title>
 <style>
 .high{
     font-size:30px;
@@ -21,7 +21,8 @@ if(!isset($suid)){
     <a href="register.php">register</a> </div>';
 }
 else{
-    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div>";
+    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div> 
+    <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
     echo "<div><a href=\"logout.php\"> Logout </a></div>";
 }
 
@@ -130,7 +131,5 @@ else{
     }
 }
 ?>
-<form action="index.php" method="post">
-    <input type="submit" value="Back">
-    </form>
+<a href = "index.php">Index Page</a>
 </html>
