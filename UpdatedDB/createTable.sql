@@ -55,6 +55,18 @@ Create table Answer(
     foreign key (qid) references Question(qid)
 );
 
+Create table FollowSession(
+    uid integer not null,
+    qid integer not null,
+    primary key(uid,qid)
+);
+
+Create table LikeSession(
+    uid integer not null,
+    aid integer not null,
+    primary key(uid,aid)
+);
+
 
 
 
