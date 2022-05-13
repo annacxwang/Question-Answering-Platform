@@ -8,6 +8,38 @@
     // $userid = $_SESSION["uid"];
     $loginusername = $_SESSION["username"];
     // $loginpassword = $_SESSION["password"];
+
+            //preset values
+    if (empty($_POST["profile"])){
+        $userprofile = "null";
+    }
+    else{
+        $userprofile = $_POST["profile"];
+    }
+    if (empty($_POST["email"])){
+        $useremail = "null";
+    }
+    else{
+        $useremail = $_POST["email"];
+    }
+    if (empty($_POST["city"])){
+        $usercity = "null";
+    }
+    else{
+        $usercity = $_POST["city"];
+    }
+    if (empty($_POST["state"])){
+        $userstate = "null";
+    }
+    else{
+        $userstate = $_POST["state"];
+    }
+    if (empty($_POST["country"])){
+        $usercountry = "null";
+    }
+    else{
+        $usercountry = $_POST["country"];
+    }
     
     if(isset($loginusername)) 
     {
@@ -18,13 +50,8 @@
     else
     {
         //if the user have entered _all_ entries in the form, insert into database
-        if(isset($_POST["username"]) && 
-            isset($_POST["password"]) &&
-            isset($_POST["profile"]) &&
-            isset($_POST["email"]) &&
-            isset($_POST["city"]) &&
-            isset($_POST["state"]) &&
-            isset($_POST["country"])) 
+
+        if(!empty($_POST["username"]) && !empty($_POST["password"])) 
         {
             $sql1 = "select uid from User where username = ?";
             //check if username already exists in database
@@ -38,8 +65,7 @@
                 $stmt->fetch();
                 if ($stmt->num_rows > 0) 
                 {
-                    echo "The input username already exists. <br />";
-                    echo "You will be redirected to the register page";
+                    echo "Username existed, please select a new username!";
                     header("refresh: 1; register.php");
                     $stmt->close();
                 }
@@ -52,16 +78,15 @@
                                 values (?,?,?,?,?,?,?)";
                     if ($stmt = $mysqli->prepare($sql2))
                     {
-                        echo "query prepared <br />";
                         $stmt->bind_param(
                                 "sssssss", 
                                 $_POST["username"],
                                 $_POST["password"], 
-                                $_POST["profile"],
-                                $_POST["email"],
-                                $_POST["city"],
-                                $_POST["state"],
-                                $_POST["country"]);
+                                $userprofile,
+                                $useremail,
+                                $usercity,
+                                $userstate,
+                                $usercountry);
                         $stmt->execute();
                         $stmt->store_result();
                         $stmt->close();
@@ -74,7 +99,6 @@
         }
         else
         {
-            //display registration form
             echo "Enter your information below: <br /> <br />\n";
             echo "<form action=\"register.php\" method=\"POST\">";
             echo "Username: <input type=\"text\" name=\"username\" /> <br />
@@ -84,8 +108,8 @@
                     City: <input type=\"text\" name= \"city\" /> <br />
                     State: <input type=\"text\" name= \"state\" /> <br />
                     Country: <input type=\"text\" name= \"country\" /> <br />";
-            echo "<input type=\"submit\" value= \"Submit\" /> <br />";
-        } 
+            echo "<input type=\"submit\" value= \"Submit\" /> <br />"; 
+        }
     }
 
     $mysqli->close();

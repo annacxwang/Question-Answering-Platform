@@ -12,9 +12,8 @@
 
     if(isset($userid)) 
     {
-        if (isset($_POST["title"]) && isset($_POST["qbody"]) && isset($_POST["tid"]))
+        if (!empty($_POST["title"]) && !empty($_POST["qbody"]) && !empty($_POST["tid"]))
         {
-            echo "enter all input checked";
             $date = date('Y-m-d H:i:s');
             $sql2 = "insert into 
                     Question (uid,tid,title,qbody,qtime) 
@@ -22,7 +21,6 @@
             
             if ($stmt = $mysqli->prepare($sql2))
             {
-                echo "query prepared <br />";
                 $stmt->bind_param(
                         "sssss", 
                         $userid,
@@ -39,35 +37,30 @@
         }
         else
         {
-                //display registration form
-                echo "Enter your Question below: <br /> <br />\n";
-                echo "<form action=\"postQuestion.php\" method=\"POST\">";
-                echo "Question title: <input type=\"text\" name=\"title\" /> <br />
-                        Question body: <input type=\"text\" name= \"qbody\" /> <br />
-                        Topic id: <input type=\"text\" name= \"tid\" /> <br />";
-                echo "<input type=\"submit\" value= \"Submit\" /> <br />";
-                echo"<br /> Reference topic id is shown below <br />";
-                $allTopic = $mysqli->prepare("select * from Topic");
-                $allTopic->execute();
-                $allTopic->bind_result($tid,$title,$higher);
-                while ($allTopic->fetch())
-                {
-                    if($higher == null)
-                    {
-                        $class ="high";
-                        $tidinfo = $tid;
-                        $tiltleinfo = $title;
-                    }
-                    else
-                    {
-                        $class = "low";
-                        $tidinfo = $tid;
-                        $tiltleinfo = "&ensp;--".$title;
-                    }
-                    echo "<div class = \"$class\">$tid: $tiltleinfo</div>";
-                }
-            
-        }
+            //echo "Please input all the required field";
+            //header("refresh: 1; postQuestion.php");
+
+            //display registration form
+            echo "Enter your Question below: <br /> <br />\n";
+            echo "<form action=\"postQuestion.php\" method=\"POST\">";
+            echo "Question title: <input type=\"text\" name=\"title\" /> <br />
+                    Question body: <input type=\"text\" name= \"qbody\" /> <br />";
+            echo "Select corresponding topic field:";
+            echo "<select name=\"tid\">";
+            $allTopic = $mysqli->prepare("select * from Topic");
+            $allTopic->execute();
+            $allTopic->bind_result($tid,$title,$higher);
+            while ($allTopic->fetch())
+            {
+                $tidinfo = $tid;
+                $titleinfo = $title;
+                echo "<option value=$tid>$titleinfo</option>";
+            }
+            echo "</select> <br />";
+                    
+            echo "<input type=\"submit\" value= \"Submit\" /> <br />";
+            echo"<br /> Reference topic id is shown below <br />";
+        }  
     }
     else
     {
