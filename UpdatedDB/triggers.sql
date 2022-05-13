@@ -1,9 +1,22 @@
 
--- Point trigger
 -- Drop TRIGGER pointUpdate;
 -- Drop TRIGGER pointInsert;
 -- Drop TRIGGER pointDelete;
 -- Drop TRIGGER QuestionDelete;
+-- Drop TRIGGER AnswerDelete;
+-- Drop TRIGGER UserDelete;
+
+
+DELIMITER $$
+create trigger AnswerDelete
+before DELETE on Answer
+FOR EACH ROW
+BEGIN 
+    delete from LikeSession 
+    where LikeSession.aid = old.aid;
+END
+$$
+DELIMITER ;
 
 
 DELIMITER $$
@@ -13,9 +26,25 @@ FOR EACH ROW
 BEGIN 
     delete from Answer
     where Answer.qid = old.qid;
+    delete from FollowSession
+    where FollowSession.qid = old.qid;
 END
 $$
 DELIMITER ;
+
+DELIMITER $$
+create trigger UserDelete
+before DELETE on User
+FOR EACH ROW
+BEGIN 
+    delete from FollowSession 
+    where FollowSession.uid = old.uid;
+    delete from LikeSession 
+    where LikeSession.uid = old.uid;
+END
+$$
+DELIMITER ;
+
 
 
 DELIMITER $$
