@@ -48,7 +48,7 @@
                     State: <input type=\"text\" name= \"state\" /> <br />
                     Country: <input type=\"text\" name= \"country\" /> <br />
                     <input type = \"hidden\" name =\"clicked\" />";
-        echo "<input type=\"submit\" value= \"Register\" /> <br />";
+        echo "<input type=\"submit\" value= \"Register\" /> <br /></form>";
         echo " <div>Already have an account?<a href = \"login.php\">login</a></div>";
         echo '<a href ="index.php">Index Page</a>'; 
     }
@@ -111,10 +111,6 @@
             }
         
         }
-        /*else if(!empty($_POST["email"])){
-            echo"<script>alert('Enter valid email address');</script>";
-            displayRegistrationForm();
-        }*/
         else if(isset($_POST["clicked"])){
             echo"<script>alert('Required fields Incomplete!');</script>";
             displayRegistrationForm(); }

@@ -62,13 +62,7 @@ function computeStatus($pt){
 }
 
 if(isset($qid)){
-     /* if(isset($_SESSION["refresh"])){
-      if ($_SESSION["refresh"] == 1){
-        //echo "refresh..";
-        $_SESSION["refresh"] =0;
-        header("refresh: 0.1");}
 
-    }*/
 
     //top user info bar
     if(!isset($suid)){
@@ -147,7 +141,7 @@ if(isset($qid)){
         echo "<div>Topic: <a href = \"browse.php?tid=$tid\">$topic</a></div>";
         echo "<h1>$title</h1>";
 
-        //Event Handler for Resolve and follow buttons
+        //Event Handler for Resolve, delete and follow buttons
         if(isset($_POST['res'])){
             //echo"res clicked";
             $new = 1-$res;
@@ -155,6 +149,25 @@ if(isset($qid)){
             $update->execute();
             $update->close();
             header("Refresh:0");
+        }
+        else if (isset($_POST['delQuestion'])){
+
+            $delAnswer = "Delete from Answer where qid =?";
+            $stmt = $mysqli->prepare($delAnswer);
+            $stmt->bind_param("s", $qid);
+            $stmt->execute();
+            $stmt->close();
+
+            $delQuestion = "Delete from Question where qid =?";
+            $stmt = $mysqli->prepare($delQuestion);
+            $stmt->bind_param("s", $qid);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->close();
+
+            echo "<script>alert('Deletion Complete');</script>";
+            header("Refresh:0;index.php");
+            
         }
         else if (isset($_POST['follow'])){
             //echo"follow clicked";
@@ -208,7 +221,7 @@ if(isset($qid)){
          ";
         
         
-        
+        // if current user asks this question
         if($suid == $uid){
             if($res == 1){
                 $resText = "Unresolve";
@@ -216,10 +229,10 @@ if(isset($qid)){
             else{
                 $resText = "Resolve";
             }
-            echo "
-            <input type=\"submit\" name=\"res\"
-                value=\"$resText \"/>
-            ";
+            echo "<input type=\"submit\" name=\"res\"
+                value=\"$resText \"/>";
+                echo "<input type=\"submit\" name=\"delQuestion\"
+                value=\"Delete \"/>";
         }
         echo "</form>";
         if($res == 1){
@@ -311,6 +324,7 @@ if(isset($qid)){
         //echo "$count";
 
 
+        //event handlers for all like and delete buttons clicked
         for($x = 0; $x < $count; $x++){
             $aid = $aidArr[$x];
             $sessionIndex = 'liked'.$aid;

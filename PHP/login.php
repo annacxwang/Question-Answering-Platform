@@ -16,7 +16,7 @@ function displayLoginForm($url){
         echo "Username: <input type=\"text\" name=\"username\" /><br />";
         echo "Password: <input type=\"password\" name= \"password\" /><br />";
         echo "<input type = \"hidden\" name = \"url\" value = $url />";
-        echo "<input type=\"submit\" value= \"Submit\" /> <br />";
+        echo "<input type=\"submit\" value= \"Submit\" /> <br /></form>";
         echo " <div>Don't have an account?<a href = \"register.php\">register</a></div>";
         echo "<div><a href = \"index.php\">Index Page</a></div>";
 }
