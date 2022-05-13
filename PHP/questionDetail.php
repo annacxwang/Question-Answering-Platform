@@ -38,6 +38,7 @@
     </style>
 
 <?php
+
 include ("connectdb.php");
 $qid = $_GET["qid"];
 $suid = $_SESSION["uid"];
@@ -59,9 +60,19 @@ function computeStatus($pt){
 }
 
 if(isset($qid)){
+     /* if(isset($_SESSION["refresh"])){
+      if ($_SESSION["refresh"] == 1){
+        //echo "refresh..";
+        $_SESSION["refresh"] =0;
+        header("refresh: 0.1");}
+
+    }*/
+
+    
     if(!isset($suid)){
-        echo"<div><a href=\"login.php\">login</a> 
-        <a href=\"register.php\">register</a> </div>";
+        //$uri = substr($_SERVER['REQUEST_URI'],1);
+        echo'<div><a href="login.php">login</a> 
+        <a href="register.php">register</a> </div>';
     }
     else{
         echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div>";
@@ -158,8 +169,9 @@ if(isset($qid)){
             echo "
             <input type=\"submit\" name=\"res\"
                 value=\"$resText \"/>
-            </form>";
+            ";
         }
+        echo "</form>";
         if($res == 1){
             echo("Resolved");
         }
@@ -210,7 +222,7 @@ if(isset($qid)){
             $aidArr[$count] = $aid;
             $likesArr[$count] = $likes;
             $count++;
-            echo "<div>Answer #$aid:</div>";
+            echo "<div>Answer #$count (Overall #$aid):</div>";
             echo "<div>$abody</div>";
             $status = computeStatus($pt);
             echo "<div>By $status <a href=\"userProfile.php?uid=$uid\">$username</a> Posted @ $atime</div>";
@@ -231,10 +243,11 @@ if(isset($qid)){
 
              if($suid == $uid){
                 //echo "<form method=\"post\"><button name=\"delAns\" type=\"submit\" value=\"$aid\">Delete</button></form>";
-                echo "<div><form class =\"bts\" method=\"post\">
+                echo "
             <input type=\"submit\" name=\"delete$aid\"
                     value=\"Delete\"/>";
             }
+            echo "</form>";
 
 
 
@@ -242,7 +255,7 @@ if(isset($qid)){
                 $aidArr[$count] = $aid;
                 $likesArr[$count] = $likes;
                 $count++;
-                echo "<div>Answer #$aid:</div>";
+                echo "<div>Answer #$count (Overall #$aid):</div>";
                 echo "<div>$abody</div>";
                 $status = computeStatus($pt);
                 echo "<div>By $status <a href=\"userProfile.php?uid=$uid\">$username</a> Posted @ $atime</div>";
@@ -262,10 +275,10 @@ if(isset($qid)){
 
              if($suid == $uid){
                 //echo "<form method=\"post\"><button name=\"delAns\" type=\"submit\" value=\"$aid\">Delete</button></form>";
-                echo "<div><form class =\"bts\" method=\"post\">
-            <input type=\"submit\" name=\"delete$aid\"
+                echo "<input type=\"submit\" name=\"delete$aid\"
                     value=\"Delete\"/>";
             }
+            echo "</form>";
 
              }
 
@@ -280,7 +293,7 @@ if(isset($qid)){
             $deleteIndex = 'delete'.$aid;
             //echo "session is $sessionIndex";
         if (isset($_POST[$sessionIndex])){
-            //echo"follow clicked";
+            //echo"like clicked";
             if($_SESSION[$sessionIndex] ==1){
                 //echo"follow -> unfollow";
                 //if(isset($_POST['follow'])){
@@ -289,41 +302,43 @@ if(isset($qid)){
                     $update->execute();
                     $update->close();
                     $_SESSION[$sessionIndex] = 0;
-                    header("Refresh:0");
+                    $_SESSION["refresh"] = 1;
+                    //header("Refresh:0");
+                    echo "<meta http-equiv='refresh' content='0'>";
                 //}
             } 
-            else{
-                if(isset($suid)){
+            else if(isset($suid)){
                     //echo"unfollow -> follow";
                     $new = $likesArr[$x]+1;
                     $update = $mysqli->prepare("Update Answer set likes = $new where aid = $aid");
                     $update->execute();
                     $update->close();
                     $_SESSION[$sessionIndex] = 1;
-                    header("Refresh:0");
+                    $_SESSION["refresh"] = 1;
+                    //header("Refresh:0");
+                    echo "<meta http-equiv='refresh' content='0'>";
                 }
             else{
                 echo "<script>alert('Log in required to like!');</script>";
-            }}
+            }
         }
-        else if (isset($_POST[$deleteIndex])){
+        if (isset($_POST[$deleteIndex])){
             //echo "delete clicked";
-            echo "delete from Answer where aid= $aid";
+            //echo "delete from Answer where aid= $aid";
             $deleteAns = $mysqli->prepare("delete from Answer where aid= $aid");
             if(!$deleteAns->execute()){
                 echo "Error description: ".($deleteAns -> error)."Returning to index page...";
                 //header("refresh: 2; index.php");
             };
             $deleteAns->close();
-            header("Refresh:0");
+            $_SESSION["refresh"] = 1;
+            //header("Refresh:0");
+            echo "<meta http-equiv='refresh' content='0'>";
 
         }
 
         }
-
-    }
-
-    //post answer
+        //post answer
     if(isset($_SESSION["uid"])){
          
 
@@ -338,7 +353,8 @@ if(isset($qid)){
                 $stmt->close();
               //$user_id = htmlspecialchars($_SESSION["user_id"]);*/
               //echo "You will be returned to your blog in 3 seconds or click <a href=\"view.php?user_id=$user_id\">here</a>.";
-              header("refresh: 0;");
+             // header("Refresh:0");
+              echo "<meta http-equiv='refresh' content='0'>";
             }  
           }
           //if not then display the form for posting answer
@@ -346,13 +362,17 @@ if(isset($qid)){
             echo "<br /><br />\n";
             echo "<form method=\"post\">";
             //echo "<input type=\"text\" name=\"abody\" placeholder=\"Enter Answer Here...\">";
-            echo "<textarea cols=\"40\" rows=\"10\" name=\"abody\" placeholder=\"Enter Answer Here...\"/></textarea>
+            echo "<textarea cols=\"40\" rows=\"3\" name=\"abody\" placeholder=\"Enter Answer Here...\"/></textarea>
             <input type=\"submit\" value=\"Post Answer\">
             </form> ";  
         
           //}
 
     }
+
+    }
+
+    
 
 
    /*

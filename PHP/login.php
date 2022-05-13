@@ -7,14 +7,18 @@
 
 include ("connectdb.php");
 
+
 $sql1 = "select uid, username, password from User where username = ? and password = ?";
 
 //if the user is already logged in, redirect them back to homepage
 if(isset($_SESSION["username"])) 
 {
     echo "You are already logged in. \n";
-    echo "You will be redirected in 3 seconds or click <a href=\"index.php\">here</a>.\n";
-    header("refresh: 3; index.php");
+    echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.\n";
+
+    //header("refresh:1;".$_SERVER['HTTP_REFERER']);
+    header("refresh: 1; index.php");
+    //header('Location: '.$_SERVER['HTTP_REFERER']);
 }
 else 
 {
@@ -38,9 +42,34 @@ else
                 $_SESSION["password"] = $password;
                 $_SESSION["REMOTE_ADDR"] = $_SERVER["REMOTE_ADDR"]; //store clients IP address to help prevent session hijack
                 
-                echo ("login successful");
-                // echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.";
-                header("refresh: 1; index.php");
+                //echo ("login successful");
+                $url = $_POST["url"];
+                //echo "posted $url";
+                if(strlen($url)>0){
+                    //echo "You will be redirected in 1 seconds or click <a href=\"$url\">here</a>.";
+                    
+                    header('Location: '.$url);
+                }
+                else{
+                    echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.";
+                    header("refresh:1; index.php");
+                }
+                 
+               /*
+                 if(isset($uri)){
+
+                    $url = substr($uri, 1);
+                    echo "You will be redirected in 1 seconds or click <a href=\"$url\">here</a>.";
+                    echo $url; 
+                    //header("refresh:1; $url");
+                     //header("refresh:1; $index.php");
+                 }  
+                 else{
+                    echo "You will be redirected in 1 seconds or click <a href=\"index.php\">here</a>.";
+                    header("refresh:1; index.php");
+                 }*/
+                //echo $_SERVER['HTTP_REFERER'];
+                //header('Location: '.$_SERVER['HTTP_REFERER']);
             }
           //if no match then tell them to try again
             else 
@@ -55,10 +84,16 @@ else
     //if not then display login form
     else 
     {
+        
+        
+        //echo $_SERVER['HTTP_REFERER'];
+        $url = $_SERVER['HTTP_REFERER'];
+        //echo "to post $url";
         echo "Enter your username and password below:<br />";
         echo "<form action=\"login.php\" method= \"POST\">";
         echo "Username: <input type=\"text\" name=\"username\" /><br />";
         echo "Password: <input type=\"password\" name= \"password\" /><br />";
+        echo "<input type = \"hidden\" name = \"url\" value = $url />";
         echo "<input type=\"submit\" value= \"Submit\" /> <br />";
     }
 }

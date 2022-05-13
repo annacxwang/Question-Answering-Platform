@@ -10,8 +10,14 @@ unset($_SESSION["username"]);
 unset($_SESSION["password"]);
 session_destroy();
 
-echo "You are logged out. You will be redirected";
-  header("refresh: 1; index.php");
+
+  if(isset($_SERVER['HTTP_REFERER'])){
+  //echo $_SERVER['HTTP_REFERER'];
+  header('Location: '.$_SERVER['HTTP_REFERER']);}
+  else{
+    echo "You are logged out. You will be redirected";
+    header("refresh: 1; index.php");
+  }
 ?>
 
 </html>
