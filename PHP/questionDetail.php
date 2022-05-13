@@ -47,6 +47,7 @@ $loginusername = $_SESSION["username"];
 //$resed = $_SESSION["resed"];
 $sort = $_GET["sort"];
 
+// function to compute user status from points
 function computeStatus($pt){
     if($pt >1000){
        return "Expert";
@@ -68,7 +69,7 @@ if(isset($qid)){
 
     }*/
 
-    
+    //top user info bar
     if(!isset($suid)){
         //$uri = substr($_SERVER['REQUEST_URI'],1);
         echo'<div><a href="login.php">login</a> 
@@ -77,7 +78,53 @@ if(isset($qid)){
     else{
         echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div>";
         echo "<div><a href=\"logout.php\"> Logout </a></div>";
+
+        //load user session info
+        
+        $followSession = $mysqli->prepare("select * from FollowSession where qid = $qid and uid = $suid");
+        if(!$followSession->execute()){
+            echo "Error description: ".($followSession -> error)."Returning to index page...";
+            header("refresh: 999");
+        };
+        $followSession->bind_result($followed);
+        if ($followSession->fetch()){
+        $_SESSION['followed'] = 1;}
+        else{
+            $_SESSION['followed'] = 0;
+        }
+        $followSession->close();
+
+
+        //set likeSession default 0
+        $all = $mysqli->prepare("select aid from Answer A where A.qid = $qid ");
+        if(!$all->execute()){
+            echo "Error description: ".($all -> error)."Returning to index page...";
+            header("refresh: 999");
+        };
+        $all->bind_result($aid);
+        while($all->fetch()){
+            $_SESSION['liked'.$aid] = 0;
+        }
+        $all->close();
+
+        //load like session info
+        
+        $likeSession = $mysqli->prepare("select S.aid from LikeSession S ,Answer A where A.aid = S.aid and A.qid = $qid and S.uid = $suid");
+        if(!$likeSession->execute()){
+            echo "Error description: ".($likeSession -> error)."Returning to index page...";
+            header("refresh: 999");
+        };
+        $likeSession->bind_result($aid);
+        $likeSession->store_result();
+        while($likeSession->fetch()){
+            $_SESSION['liked'.$aid] = 1;
+        }
+        $likeSession->close();
+
+        
     }
+
+    //start of question information
     echo"detail of question $qid ";
 
     $question = $mysqli->prepare("Select T.tid,T.title,Q.uid,Q.title,Q.qbody,qtime,followcount,resolved,username,points from Topic T,Question Q, User U where T.tid = Q.tid and Q.uid = U.uid and qid = ?");
@@ -100,12 +147,7 @@ if(isset($qid)){
         $status = computeStatus($pt);
         echo "Topic: <a href = \"browse.php?tid=$tid\">$topic</a>";
         echo "<h1>$title</h1>";
-        //echo "<div>$follow</div>";
 
-        //$followText = "Follow";
-        
-        
-        
         if(isset($_POST['res'])){
             //echo"res clicked";
             $new = 1-$res;
@@ -116,35 +158,43 @@ if(isset($qid)){
         }
         else if (isset($_POST['follow'])){
             //echo"follow clicked";
-            if($_SESSION["followed"] ==1){
-                //echo"follow -> unfollow";
-                //if(isset($_POST['follow'])){
+            
+            if(isset($suid)){
+                $sessionUpdate = $mysqli->prepare("insert into FollowSession(uid,qid) values(?,?)");
+                $sessionUpdate->bind_param('ii',$suid,$qid);
+                if(!$sessionUpdate->execute()){
+                    //echo "Error description: ".($sessionUpdate -> error)."Returning to index page...";
+                    $sessionUpdate->close();
                     $new = $follow-1;
                     $update = $mysqli->prepare("Update Question set followcount = $new where qid = $qid");
                     $update->execute();
                     $update->close();
-                    $_SESSION["followed"] = 0;
+
+                    $sessionUpdate = $mysqli->prepare("delete from FollowSession where uid = ? and qid = ?");
+                    $sessionUpdate->bind_param('ii',$suid,$qid);
+                    $sessionUpdate->execute();
+                    $sessionUpdate->close();
+                
                     header("Refresh:0");
-                //}
-            } 
-            else{
-                if(isset($suid)){
-                    //echo"unfollow -> follow";
+
+                    }
+                else{
+                    $sessionUpdate->close();
                     $new = $follow+1;
                     $update = $mysqli->prepare("Update Question set followcount = $new where qid = $qid");
                     $update->execute();
                     $update->close();
-                    $_SESSION["followed"] = 1;
                     header("Refresh:0");
-                }
+
+                    }
+                   
+
+            }
             else{
                 echo "<script>alert('Log in required to follow!');</script>";
-            }}
-        }
-        
-        
-        
+            }
 
+        }
         if($_SESSION['followed'] == 1){
             $followText = "Unfollow";
         }
@@ -205,52 +255,25 @@ if(isset($qid)){
             $answers = $mysqli->prepare("select aid, A.uid, abody,atime, likes, username,points from Answer A, User U where A.uid = U.uid and qid = $qid order by likes DESC;");
         }
 
+
         $aidArr = array();
         $likesArr = array();
         $count = 0;
+
+        
+
 
         if(!$answers->execute()){
             echo "Error description: ".($answers -> error)."Returning to index page...";
             header("refresh: 2; index.php");
         };
         $answers->bind_result($aid,$uid,$abody,$atime,$likes,$username,$pt);
-        if(!$answers->fetch()){
+        $answers->store_result();
+        if($answers->num_rows == 0){
             echo "<div>No answers matching qid \"".$qid."\"</div>";
             $answers->close();
             }
         else{
-            $aidArr[$count] = $aid;
-            $likesArr[$count] = $likes;
-            $count++;
-            echo "<div>Answer #$count (Overall #$aid):</div>";
-            echo "<div>$abody</div>";
-            $status = computeStatus($pt);
-            echo "<div>By $status <a href=\"userProfile.php?uid=$uid\">$username</a> Posted @ $atime</div>";
-            
-            
-            if($_SESSION['liked'.$aid] == 1){
-                $likeText = "Unlike";
-            }
-            else{
-                $likeText = "Like";
-            }
-            echo "<div><form class =\"bts\" method=\"post\">
-            <input type=\"submit\" name=\"liked$aid\"
-                    value=\"$likeText $likes\"/>
-             ";
-
-             //show delete button if posted by current user
-
-             if($suid == $uid){
-                //echo "<form method=\"post\"><button name=\"delAns\" type=\"submit\" value=\"$aid\">Delete</button></form>";
-                echo "
-            <input type=\"submit\" name=\"delete$aid\"
-                    value=\"Delete\"/>";
-            }
-            echo "</form>";
-
-
-
              while($answers->fetch()){
                 $aidArr[$count] = $aid;
                 $likesArr[$count] = $likes;
@@ -294,6 +317,44 @@ if(isset($qid)){
             //echo "session is $sessionIndex";
         if (isset($_POST[$sessionIndex])){
             //echo"like clicked";
+
+
+            if(isset($suid)){
+                $sessionUpdate = $mysqli->prepare("insert into LikeSession(uid,aid) values(?,?)");
+                $sessionUpdate->bind_param('ii',$suid,$aid);
+                if(!$sessionUpdate->execute()){
+                    //echo "Error description: ".($sessionUpdate -> error)."Returning to index page...";
+                    $sessionUpdate->close();
+                    $new = $likesArr[$x]-1;
+                    $update = $mysqli->prepare("Update Answer set likes = $new where aid = $aid");
+                    $update->execute();
+                    $update->close();
+
+                    $sessionUpdate = $mysqli->prepare("delete from LikeSession where uid = ? and aid = ?");
+                    $sessionUpdate->bind_param('ii',$suid,$aid);
+                    $sessionUpdate->execute();
+                    $sessionUpdate->close();
+                
+                    echo "<meta http-equiv='refresh' content='0'>";
+
+                    }
+                else{
+                    $sessionUpdate->close();
+                    $new = $likesArr[$x]+1;
+                    $update = $mysqli->prepare("Update Answer set likes = $new where aid = $aid");
+                    $update->execute();
+                    $update->close();
+                    echo "<meta http-equiv='refresh' content='0'>";
+
+                    }
+                   
+
+            }
+            else{
+                echo "<script>alert('Log in required to follow!');</script>";
+            }
+/*
+
             if($_SESSION[$sessionIndex] ==1){
                 //echo"follow -> unfollow";
                 //if(isset($_POST['follow'])){
@@ -320,7 +381,7 @@ if(isset($qid)){
                 }
             else{
                 echo "<script>alert('Log in required to like!');</script>";
-            }
+            }*/
         }
         if (isset($_POST[$deleteIndex])){
             //echo "delete clicked";
