@@ -9,7 +9,7 @@
     $loginusername = $_SESSION["username"];
     //$loginusername = $_SESSION["username"];
     // $loginpassword = $_SESSION["password"];
-    date_default_timezone_get();
+    //date_default_timezone_get();
 
     if(isset($userid)) 
     {
@@ -18,26 +18,42 @@
 
         if (!empty($_POST["title"]) && !empty($_POST["qbody"]) && !empty($_POST["tid"]))
         {
-            $date = date('Y-m-d H:i:s');
+            $checkTitle = "select qid from Question where title = ?";
+            //check if username already exists in database
+            //$stmt = $mysqli->prepare($sql1);
+            $stmt = $mysqli->prepare($checkTitle);
+            $stmt->bind_param("s", $_POST["title"]);
+            $stmt->execute();
+            $stmt->store_result();
+            if ($stmt->num_rows > 0) 
+                {
+                    $stmt->close();
+                    echo"<script>alert('Question already asked!');</script>";
+                    header("refresh: 0; index.php");
+                    
+                }
+            else{
             $sql2 = "insert into 
-                    Question (uid,tid,title,qbody,qtime) 
-                    values (?,?,?,?,?)";
+                    Question (uid,tid,title,qbody) 
+                    values (?,?,?,?)";
             
             if ($stmt = $mysqli->prepare($sql2))
             {
                 $stmt->bind_param(
-                        "sssss", 
+                        "ssss", 
                         $userid,
                         $_POST["tid"], 
                         $_POST["title"],
-                        $_POST["qbody"],
-                        $date);
-                $stmt->execute();
-                $stmt->store_result();
+                        $_POST["qbody"]);
+                if(!$stmt->execute()){
+                    echo "Error description: ".($stmt -> error)."Returning to index page...";
+                    $stmt->close();}
+                else{
                 echo "Question has been posted successfully, click <a href=\"index.php\">here</a> to return to homepage.";
                 $stmt->close();
-                header("refresh: 1; index.php");
+                header("refresh: 1; index.php");}
             }
+        }
         }
         else
         {
