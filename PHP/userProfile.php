@@ -1,66 +1,79 @@
 <!DOCTYPE html>
 
 <html>
-<div class = "Header">
-    <title>Knowledge Universe - User Profile</title>
-    <h1>Welcome to Knowledge Universe</h1>
-</div>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
+<title>Knowledge Universe - User Profile</title>
 <style>
+   * {
+  box-sizing: border-box;
+}
+
+/* header row */
+.column {
+  float: left;
+  padding: 10px;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#logo{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    font-size: 30px;
+    width:30%;
+}
+#search-bar{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    width:40%;
+}
+input[type=submit] {
+    padding:5px 15px; 
+    background:#B22222; 
+    color:#ffffff;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+    font-family: Monaco,monospace;
+}
+#user{
+    color: #B22222;
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+    width:30%;
+}
+.Footer{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
     /* Stylesheet 1: */
     body {
         font: 100%;
         font-family: arial, sans-serif;
         margin: 20px;
         line-height: 26px;
-        border: 20px solid transparent;
     }
-    
+
     .TableWrapper {
         position: relative;
         overflow: auto;
-        
     }
 
-    /* .Top, .Bottom {
-        color: #000000;
+    .top, .bottom {
+        background-color: #04AA6D;
+        color: #ffffff;
         padding: 15px;
-    } */
-
-    #Top{
-        background-color:#eeeeee;
-        display:inline;
     }
 
-    .NavInfo{
-        display: inline;
-    }
 
-    .NavItem {
-        border: 1px solid #d4d4d4;
-        list-style-type: none;
-        padding: 2px;
-        cursor: pointer;
-        width: 20%;
-    }
-
-    /* #Text {
-        font:140%;
-
-    } */
     
-    /* form {
-            margin: 30px auto;
-            width: 500px;
-            border: 3px solid transparent;
-            padding: 20px
-        } */
 
 
     table {
         font-family: arial, sans-serif;
-        align: center;
         border-collapse: collapse;
         width: 100%;
     }
@@ -76,6 +89,8 @@
     }
 
 </style>
+
+
 <body>
 <?php
     include ("connectdb.php");
@@ -86,6 +101,22 @@
     $suid = $_SESSION["uid"];
     $loginusername = $_SESSION["username"];
     
+    echo '<div class = "row">
+    <div class="column" id = "logo">Knowledge Universe</div>
+    <div class = "column" id="search-bar"> <form action="search.php?keyword='.$_GET["keyword"].' method="post">
+    <textarea cols="40" rows="1" name="keyword" placeholder="Enter Search Keyword..."/></textarea>
+    <input type="submit" value="Search">
+    </form></div>';
+    if(!isset($suid))
+        {
+            echo '<div class = "column" id="user"> <a href="login.php">login</a> <a href="register.php">register</a> </div>';
+            }
+    else{
+            echo '<div class = "column" id="user"> Welcome, <a href="userProfile.php?uid='.$suid.'">'.$loginusername.'</a>
+            <a href="postQuestion.php"> Post question</a>
+            <a href="logout.php"> Logout </a></div>';
+            }
+    echo "</div>";
 
     if (isset($_GET["uid"])){
         $userid = $_GET["uid"];
@@ -105,36 +136,7 @@
             $stmt->bind_result($username, $profile, $points,$city,$state,$country);
             if ($stmt->num_rows > 0) 
             {
-                if(!isset($suid))
-                {
-                    echo"<div class = \"Top\">
-                            <ul class = \"NavInfo\">
-                                
-                                <li class = \"NavItem\">
-                                    <a href=\"login.php\">login</a>
-                                </li> 
-                                
-                                <li class = \"NavItem\">
-                                    <a href=\"register.php\">register</a> 
-                                </li>
-                            </ul>
-                        </div>";
-                }
-                else{
-                    echo"<div class = \"Top\">
-                            <ul class = \"NavInfo\">
-                                <li class = \"NavItem\">    
-                                    Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a> <br />
-                                </li>
-                                <li class = \"NavItem\">
-                                    <a href=\"logout.php\"> Logout </a> <br />
-                                </li>
-                                <li class = \"NavItem\">
-                                    <a href=\"postQuestion.php\"> Post question</a>
-                                </li>
-                            </ul>
-                        </div>";
-                }
+                
                 
                 echo "<div class = \"TableWrapper\">";
                 $stmt->fetch();
@@ -191,10 +193,8 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "<h3>
-                            Questions asked by $username are listed below,
-                            you can click on the question id to view the question detail. </h3>
-                            <br />";
+                        echo "Questions asked by $username are listed below, <br />
+                        you can click on the question id to view the question detail. <br />";
                         echo "</div>";
                         
                         echo "<table>";
@@ -245,9 +245,8 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "<h3> Question answered by $username are listed below,
-                        you can click on the question id to view the question detail. 
-                        </h3> <br />";
+                        echo "Question answered by $username are listed below, <br />
+                        you can click on the question id to view the question detail. <br />";
                         echo "</div>";
 
                         echo "<table>";
@@ -298,9 +297,8 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "<h3> Questions followed by $username are listed below,
-                        you can click on the question id to view the question detail. 
-                        </h3> <br />";
+                        echo "Questions followed by $username are listed below, <br />
+                        you can click on the question id to view the question detail. <br />";
                         echo "</div>";
 
                         echo "<table>";
@@ -352,9 +350,8 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "<h3> Answers liked by $username are listed below,
-                        you can click on the question id to view the question detail. 
-                        </h3> <br />";
+                        echo "Answers liked by $username are listed below, <br />
+                        you can click on the question id to view the question detail. <br />";
                         echo "</div>";
 
                         echo "<table>";
