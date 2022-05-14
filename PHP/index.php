@@ -1,10 +1,82 @@
 <!DOCTYPE html>
 
 <html>
-<div class = "Header">
-    <title>Knowledge Universe - User Profile</title>
-    <h1>Welcome to Knowledge Universe</h1>
-</div>
+
+  <style>
+     * {
+  box-sizing: border-box;
+}
+
+/* header row */
+.column {
+  float: left;
+  padding: 10px;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#logo{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    font-size: 30px;
+    width:30%;
+}
+#search-bar{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    width:40%;
+}
+input[type=submit] {
+    padding:5px 15px; 
+    background:#B22222; 
+    color:#ffffff;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+    font-family: Monaco,monospace;
+}
+#user{
+    color: #B22222;
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+    width:30%;
+}
+#hyper{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
+.Footer{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
+    /* Stylesheet 1: */
+
+
+
+    table {
+        font-family: arial, sans-serif;
+        align: center;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    td,th{
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        width: 10%;
+    }
+    tr:nth-child(even){
+        background-color: #dddddd;
+        width: 10%;
+    }
+    </style>
+
+    <title>Knowledge Universe - Index</title>
+
 
 <?php
 
@@ -14,45 +86,27 @@ include ("connectdb.php");
 $userid = $_SESSION["uid"];
 $loginusername = $_SESSION["username"];
 // $loginpassword = $_SESSION["password"];
+echo '<div class = "row">
+    <div class="column" id = "logo">Knowledge Universe</div>
+    <div class = "column" id="search-bar"> <form action="search.php?keyword='.$_GET["keyword"].' method="post">
+    <textarea cols="40" rows="1" name="keyword" placeholder="Enter Search Keyword..."/></textarea>
+    <input type="submit" value="Search">
+    </form></div>';
+    if(!isset($userid))
+        {
+            echo '<div class = "column" id="user"> <a href="login.php">login</a> <a href="register.php">register</a> </div>';
+            }
+    else{
+            echo '<div class = "column" id="user"> Welcome, <a href="userProfile.php?uid='.$userid.'">'.$loginusername.'</a>
+            <a href="postQuestion.php"> Post question</a>
+            <a href="logout.php"> Logout </a></div>';
+            }
+    echo "</div>";
 
-if(!isset($userid)) 
-{
-  /*echo "Welcome to the Questionary web, you are not logged in. <br />"; 
-  echo "In order to post or follow a question or like an answer you need to 
-        <a href=\"login.php\">login</a> 
-        or 
-        <a href=\"register.php\">register</a> 
-        if you don't have an account yet.";*/
-        echo'<div><a href="login.php">login</a> 
-        <a href="register.php">register</a> </div>';
-}
-// logged in user view page
-else 
-{
-  //$username = htmlspecialchars($loginusername);
-  //$uid = htmlspecialchars($userid);
-/*  echo "Welcome $username. You are logged in. <br />";
-  echo "Here is your 
-        <a href=\"userProfile.php?uid=$userid\"> user profile </a>, <br />
-        You may
-        
-        <br />
-        <a href=\"logout.php\"> logout </a>. <br /> ";*/
-        echo"<div>Welcome, <a href=\"userProfile.php?uid=$userid\"> $loginusername </a></div> 
-        <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
-        echo "<div><a href=\"logout.php\"> Logout </a></div>";
-}
-
-
-echo "<br /><br />\n";
-echo "<form action=\"search.php?keyword=".$_GET["keyword"]." method=\"post\">
-<input type=\"text\" name=\"keyword\" placeholder=\"Enter Search Keyword...\">
-<input type=\"submit\" value=\"Search\">
-</form> \n";
-echo "<a href=\"browse.php\"> Browse by Topic </a> <br />";
+echo "<a href=\"browse.php\" id =\"hyper\"> Browse by Topic </a> <br />";
 
 // view infomation
-echo "You may view 10 most recent questions here";
+echo "<h3>10 most recent questions:</h3>";
 
 $questions = $mysqli->prepare("Select Q.tid,T.title,Q.qid, Q.title, qtime,followcount 
             from Question Q,Topic T where Q.tid = T.tid order by qtime DESC limit 10");
@@ -68,7 +122,7 @@ $questions = $mysqli->prepare("Select Q.tid,T.title,Q.qid, Q.title, qtime,follow
                 // Printing results in HTML
        echo "<table>\n";
       // table header + first line
-      echo "<th>Topic</th><th>Title</th><th>Post Time</th><th>Follow Count</th></tr>\n";
+      echo "<tr><th>Topic</th><th>Title</th><th>Post Time</th><th>Follow Count</th></tr>";
       echo "<tr><td><a href=\"browse.php?tid=$qtid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow<td></tr>\n";
       // table body
       while ($questions->fetch()) {

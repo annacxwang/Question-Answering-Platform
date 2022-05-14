@@ -3,7 +3,7 @@
 <html>
 <title>Knowledge Universe - User Profile</title>
 <style>
-   * {
+     * {
   box-sizing: border-box;
 }
 
@@ -55,6 +55,7 @@ input[type=submit] {
         font-family: arial, sans-serif;
         margin: 20px;
         line-height: 26px;
+        border: 20px solid transparent;
     }
 
     .TableWrapper {
@@ -69,11 +70,9 @@ input[type=submit] {
     }
 
 
-    
-
-
     table {
         font-family: arial, sans-serif;
+        align: center;
         border-collapse: collapse;
         width: 100%;
     }
@@ -87,9 +86,7 @@ input[type=submit] {
         background-color: #dddddd;
         width: 10%;
     }
-
-</style>
-
+    </style>
 
 <body>
 <?php
@@ -175,11 +172,14 @@ input[type=submit] {
                         <td> $profile </td>
                         </tr>
                         </table>";
-                echo "<br /> <br />";
+                echo "<br /> ";
                 $stmt->close();
                 echo "</div>";
                 
                 echo "<div id = \"UserQuestion\">";
+                echo "<div id = \"Text\">";
+                        echo "<h3>Questions asked by $username </h3> ";
+                        echo "</div>";
                 $questions = "select Q.qid, Q.title, Q.qbody, Q.qtime, T.tid,T.title, U.username, Q.followcount
                     from Question Q, Topic T, User U
                     where Q.tid = T.tid and Q.uid = U.uid and Q.uid = ? 
@@ -192,10 +192,7 @@ input[type=submit] {
                     $stmt->bind_result($qid, $title, $qbody, $qtime, $tid,$topic, $username,$follow);
                     if ($stmt->num_rows > 0)
                     {
-                        echo "<div id = \"Text\">";
-                        echo "Questions asked by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
-                        echo "</div>";
+                        
                         
                         echo "<table>";
                         echo "<tr>";
@@ -215,7 +212,6 @@ input[type=submit] {
                                     </tr>";
                         }
                         echo "</table>";
-                        echo "<br /> <br />";
                         $stmt->close();
                     }
                     else
@@ -223,15 +219,17 @@ input[type=submit] {
                         $stmt->close();
                         echo "<table>";
                         echo "<tr> <td>
-                        $username hasn't asked any question yet <br />
+                        $username hasn't asked any question yet 
                             
                             </td> </tr>";
                         echo "</table>";
-                        echo "<br /> <br />";
                     }
                 }
                 echo "</div>";
                 echo "<div id = \"UserAnswer\">";
+                echo "<div id = \"Text\">";
+                        echo "<h3>Questions answered by $username </h3> ";
+                        echo "</div>";
                 $answers = "select A.qid, A.abody, A.atime, U.username, Q.title,T.tid,T.title,A.likes
                             from Answer A, User U, Question Q, Topic T
                             where Q.tid = T.tid and A.uid = U.uid and A.qid = Q.qid and A.uid = ? 
@@ -244,10 +242,7 @@ input[type=submit] {
                     $stmt->bind_result($qid, $abody, $atime, $username, $title,$tid,$topic,$likes);
                     if ($stmt->num_rows > 0)
                     {
-                        echo "<div id = \"Text\">";
-                        echo "Question answered by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
-                        echo "</div>";
+                        
 
                         echo "<table>";
                         echo "<tr>";
@@ -266,7 +261,6 @@ input[type=submit] {
                                     </tr>";
                         }
                         echo "</table>";
-                        echo "<br /> <br />";
                         $stmt->close();
                     }
                     else
@@ -274,16 +268,18 @@ input[type=submit] {
                         $stmt->close();
                         echo "<table>";
                         echo "<tr> <td>
-                            $username hasn't answered any question yet <br />
+                            $username hasn't answered any question yet 
                             
                         ";
                         echo "</table>";
-                        echo "<br /> <br />";
                     }
                 }
-                echo "</div>";
-
+                
                 echo "<div id = \"Userfollow\">";
+                echo "</div>";
+                echo "<div id = \"Text\">";
+                        echo "<h3>Questions followed by $username </h3> ";
+                        echo "</div>";
                 $following = "select Q.qid, Q.title, Q.qbody, Q.qtime, T.tid,T.title, U.username, Q.followcount
                     from FollowSession F, Question Q, Topic T, User U
                     where F.qid = Q.qid and Q.tid = T.tid and F.uid = U.uid and F.uid = ?
@@ -296,10 +292,7 @@ input[type=submit] {
                     $stmt->bind_result($qid, $title, $qbody, $qtime, $tid,$topic, $username,$follow);
                     if ($stmt->num_rows > 0)
                     {
-                        echo "<div id = \"Text\">";
-                        echo "Questions followed by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
-                        echo "</div>";
+                        
 
                         echo "<table>";
                         echo "<tr>";
@@ -319,7 +312,6 @@ input[type=submit] {
                                     </tr>";
                         }
                         echo "</table>";
-                        echo "<br /> <br />";
                         $stmt->close();
                     }
                     else
@@ -327,15 +319,16 @@ input[type=submit] {
                         $stmt->close();
                         echo "<table>";
                         echo "<tr> <td>
-                        $username hasn't followed any question yet <br />
+                        $username hasn't followed any question yet 
                             
                             </td> </tr>";
                         echo "</table>";
-                        echo "<br /> <br />";
                     }
                 }
                 echo "</div>";
-
+                echo "<div id = \"Text\">";
+                        echo "<h3>Answers liked by $username </h3> ";
+                        echo "</div>";
                 echo "<div id = \"UserLike\">";
                 $liking = "select A.qid, A.abody, A.atime, U.username, Q.title,T.tid,T.title,A.likes
                             from LikeSession L, Answer A, User U, Question Q, Topic T
@@ -349,10 +342,7 @@ input[type=submit] {
                     $stmt->bind_result($qid, $abody, $atime, $username, $title,$tid,$topic,$likes);
                     if ($stmt->num_rows > 0)
                     {
-                        echo "<div id = \"Text\">";
-                        echo "Answers liked by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
-                        echo "</div>";
+                    
 
                         echo "<table>";
                         echo "<tr>";
@@ -371,7 +361,6 @@ input[type=submit] {
                                     </tr>";
                         }
                         echo "</table>";
-                        echo "<br /> <br />";
                         $stmt->close();
                     }
                     else
@@ -379,11 +368,10 @@ input[type=submit] {
                         $stmt->close();
                         echo "<table>";
                         echo "<tr> <td>
-                            $username hasn't liked any answers yet <br />
+                            $username hasn't liked any answers yet 
                             
                         ";
                         echo "</table>";
-                        echo "<br /> <br />";
                     }
                 }
                 echo "</div>";
@@ -443,11 +431,11 @@ input[type=submit] {
     else
     {   if($suid == $_GET["uid"]){
         $tempuid = $_GET["uid"];
-        echo "If you want to close your account, please click the following button";
+        echo "<br /><div class =\"Footer\">To close your account, and delete all related data:";
         echo "<form action=\"userProfile.php\" method= \"POST\">";
         echo "<input type=\"hidden\" name=\"uid\" value=\"$tempuid\" />";
-        echo "<input type=\"submit\" name=\"button\" value=\"Close account\" /> <br />";
-        echo "</form>";}
+        echo "<input type=\"submit\" name=\"button\" value=\"Close account\" />";
+        echo "</form></div><br />";}
     }
     echo "</div>";
 

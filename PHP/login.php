@@ -1,10 +1,72 @@
 <!DOCTYPE html>
 
 <html>
-<div class = "Header">
-    <title>Knowledge Universe - User Profile</title>
-    <h1>Welcome to Knowledge Universe</h1>
-</div>
+
+    <title>Knowledge Universe - Login</title>
+
+    <style>
+     * {
+  box-sizing: border-box;
+}
+
+/* header row */
+.column {
+  float: left;
+  padding: 10px;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#logo{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    font-size: 30px;
+    width:30%;
+}
+#search-bar{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    width:40%;
+}
+input[type=submit] {
+    padding:5px 15px; 
+    background:#B22222; 
+    color:#ffffff;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+    font-family: Monaco,monospace;
+}
+#user{
+    color: #B22222;
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+    width:30%;
+}
+.Footer{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
+    /* Stylesheet 1: */
+    body {
+        font: 100%;
+        font-family: arial, sans-serif;
+        margin: 20px;
+        line-height: 26px;
+        border: 20px solid transparent;
+    }
+        .hyper{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
+
+
+
+    </style>
 
 <?php
 
@@ -14,17 +76,34 @@ include ("connectdb.php");
 $sql1 = "select uid, username, password from User where username = ? and password = ?";
 
 function displayLoginForm($url){
-    echo "Enter your username and password below:<br />";
+    echo "<h3>Enter your username and password below:</h3>";
         echo "<form action=\"login.php\" method= \"POST\">";
         echo "Username: <input type=\"text\" name=\"username\" /><br />";
         echo "Password: <input type=\"password\" name= \"password\" /><br />";
         echo "<input type = \"hidden\" name = \"url\" value = $url />";
         echo "<input type=\"submit\" value= \"Submit\" /> <br /></form>";
-        echo " <div>Don't have an account?<a href = \"register.php\">register</a></div>";
-        echo "<div><a href = \"index.php\">Index Page</a></div>";
+        echo " <div class = \"hyper\">Don't have an account?<a href = \"register.php\">register</a></div>";
+        echo "<div class = \"Footer\"><a href = \"index.php\">Index Page</a></div>";
 }
+$suid = $_SESSION["uid"];
+$loginusername = $_SESSION["username"];
 
-
+echo '<div class = "row">
+    <div class="column" id = "logo">Knowledge Universe</div>
+    <div class = "column" id="search-bar"> <form action="search.php?keyword='.$_GET["keyword"].' method="post">
+    <textarea cols="40" rows="1" name="keyword" placeholder="Enter Search Keyword..."/></textarea>
+    <input type="submit" value="Search">
+    </form></div>';
+    if(!isset($suid))
+        {
+            echo '<div class = "column" id="user"> <a href="login.php">login</a> <a href="register.php">register</a> </div>';
+            }
+    else{
+            echo '<div class = "column" id="user"> Welcome, <a href="userProfile.php?uid='.$suid.'">'.$loginusername.'</a>
+            <a href="postQuestion.php"> Post question</a>
+            <a href="logout.php"> Logout </a></div>';
+            }
+    echo "</div>";
 
 //if the user is already logged in, redirect them back to homepage
 if(isset($_SESSION["username"])) 
@@ -103,8 +182,5 @@ else
 }
 ?>
 
-<div class = "Footer">
-    <a href = "index.php">Index Page</a>
-</div>
 
 </html>

@@ -1,11 +1,93 @@
 <!DOCTYPE html>
 <!-- Search functionality of the Q and A platform -->
 <html>
-<div class = "Header">
-    <title>Knowledge Universe - User Profile</title>
-    <h1>Welcome to Knowledge Universe</h1>
-</div>
+
+    <title>Knowledge Universe - Search Results</title>
+
     <style>
+     * {
+  box-sizing: border-box;
+}
+
+/* header row */
+.column {
+  float: left;
+  padding: 10px;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#logo{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    font-size: 30px;
+    width:30%;
+}
+#search-bar{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    width:40%;
+}
+input[type=submit] {
+    padding:5px 15px; 
+    background:#B22222; 
+    color:#ffffff;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+    font-family: Monaco,monospace;
+}
+#user{
+    color: #B22222;
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+    width:30%;
+}
+.Footer{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
+    /* Stylesheet 1: */
+    body {
+        font: 100%;
+        font-family: arial, sans-serif;
+        margin: 20px;
+        line-height: 26px;
+        border: 20px solid transparent;
+    }
+
+    .TableWrapper {
+        position: relative;
+        overflow: auto;
+    }
+
+    .top, .bottom {
+        background-color: #04AA6D;
+        color: #ffffff;
+        padding: 15px;
+    }
+
+
+    table {
+        font-family: arial, sans-serif;
+        align: center;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    td,th{
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        width: 10%;
+    }
+    tr:nth-child(even){
+        background-color: #dddddd;
+        width: 10%;
+    }
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
@@ -50,17 +132,26 @@ include ("connectdb.php");
 $keyword = $_GET["keyword"];
 $suid = $_SESSION["uid"];
 $loginusername = $_SESSION["username"];
+$host = $_SERVER['HTTP_HOST'];
 
 
-if(!isset($suid)){
-    echo'<div><a href="login.php">login</a> 
-    <a href="register.php">register</a> </div>';
-}
-else{
-    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div> 
-        <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
-        echo "<div><a href=\"logout.php\"> Logout </a></div>";
-}
+echo '<div class = "row">
+    <div class="column" id = "logo">Knowledge Universe</div>
+
+    <div class = "column" id="search-bar"> <form action="search.php?keyword='.$_GET["keyword"].' method="post">
+    <textarea cols="40" rows="1" name="keyword" placeholder="Enter Search Keyword..."/></textarea>
+    <input type="submit" value="Search">
+    </form></div>';
+    if(!isset($suid))
+        {
+            echo '<div class = "column" id="user"> <a href="login.php">login</a> <a href="register.php">register</a> </div>';
+            }
+    else{
+            echo '<div class = "column" id="user"> Welcome, <a href="userProfile.php?uid='.$suid.'">'.$loginusername.'</a>
+            <a href="postQuestion.php"> Post question</a>
+            <a href="logout.php"> Logout </a></div>';
+            }
+    echo "</div>";
 
 echo"<h1>Search result of \"".$keyword."\" </h1>";
 
@@ -157,11 +248,11 @@ if(isset($_GET["keyword"])){
         // Printing results in HTML
         echo "<table>\n";
         // table header + first line
-        echo "<th>Topic</th><th>Title</th><th>Post Time</th><th>Follow Count</th></tr>\n";
-        echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow<td></tr>\n";
+        echo "<tr><th>Topic</th><th>Title</th><th>Post Time</th><th>Follow Count</th></tr>";
+        echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow<td></tr>";
         // table body
         while ($stmt->fetch()) {
-            echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow</td></tr>\n";
+        echo "<tr><td><a href=\"browse.php?tid=$tid\">$topic</a></td><td><a href=\"questionDetail.php?qid=$qid\">$title</a></td><td>$time</td><td>$follow</td></tr>";
         }
         echo "</table>\n";
     }

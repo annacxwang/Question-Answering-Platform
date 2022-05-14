@@ -1,13 +1,107 @@
 <!DOCTYPE html>
 <!--browse by topic page of the Q and A platform -->
 <html>
-<div class = "Header">
-    <title>Knowledge Universe - User Profile</title>
-    <h1>Welcome to Knowledge Universe</h1>
-</div>
+    <title>Knowledge Universe - Browse By Topic</title>
+
 <style>
+     * {
+  box-sizing: border-box;
+}
+
+/* header row */
+.column {
+  float: left;
+  padding: 10px;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+#logo{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    font-size: 30px;
+    width:30%;
+}
+#search-bar{
+    color:#B22222;
+    font-family: Papyrus, fantasy; 
+    width:40%;
+}
+input[type=submit] {
+    padding:5px 15px; 
+    background:#B22222; 
+    color:#ffffff;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; 
+    font-family: Monaco,monospace;
+}
+#user{
+    color: #B22222;
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+    width:30%;
+}
+#hyper{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
+.Footer{
+    font-family: Monaco,monospace; 
+    font-size: 16px;
+}
+    /* Stylesheet 1: */
+    body {
+        font: 100%;
+        font-family: arial, sans-serif;
+        margin: 20px;
+        line-height: 26px;
+        border: 20px solid transparent;
+    }
+
+    .TableWrapper {
+        position: relative;
+        overflow: auto;
+    }
+
+    .top, .bottom {
+        background-color: #04AA6D;
+        color: #ffffff;
+        padding: 15px;
+    }
+
+
+    table {
+        font-family: arial, sans-serif;
+        align: center;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    td{
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        width: 10%;
+    }
+    th{
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        width: 10%;
+        font-size: 20px;
+    }
+    tr:nth-child(even){
+        background-color: #dddddd;
+        width: 10%;
+    }
+
 .high{
     font-size:30px;
+    border:2px;
 }
 .low{
     font-size:20px;
@@ -19,16 +113,22 @@ $tid = $_GET["tid"];
 $suid = $_SESSION["uid"];
 $loginusername = $_SESSION["username"];
 
-if(!isset($suid)){
-    echo'<div><a href="login.php">login</a> 
-    <a href="register.php">register</a> </div>';
-}
-else{
-    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div> 
-    <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
-    echo "<div><a href=\"logout.php\"> Logout </a></div>";
-}
-
+echo '<div class = "row">
+    <div class="column" id = "logo">Knowledge Universe</div>
+    <div class = "column" id="search-bar"> <form action="search.php?keyword='.$_GET["keyword"].' method="post">
+    <textarea cols="40" rows="1" name="keyword" placeholder="Enter Search Keyword..."/></textarea>
+    <input type="submit" value="Search">
+    </form></div>';
+    if(!isset($suid))
+        {
+            echo '<div class = "column" id="user"> <a href="login.php">login</a> <a href="register.php">register</a> </div>';
+            }
+    else{
+            echo '<div class = "column" id="user"> Welcome, <a href="userProfile.php?uid='.$suid.'">'.$loginusername.'</a>
+            <a href="postQuestion.php"> Post question</a>
+            <a href="logout.php"> Logout </a></div>';
+            }
+    echo "</div>";
 if(isset($tid)){
     
 
@@ -82,7 +182,7 @@ if(isset($tid)){
         else{
             //current tid is a lower level topic
 
-            echo "<div><a href=\"browse.php?tid=$higherTid\">Higher Level Topic</a></div>";
+            echo "<div id = \"hyper\"><a href=\"browse.php?tid=$higherTid\">Higher Level Topic</a></div>";
            
             echo"<h1>Questions under topic \"$topic\" </h1>"; 
             
@@ -117,21 +217,22 @@ if(isset($tid)){
     $mysqli->close();
     }
 else{
-    echo"list of topics";
+    echo"<h2>List of topics:</h2><div><table>";
     $allTopic = $mysqli->prepare("select * from Topic");
     $allTopic->execute();
     $allTopic->bind_result($tid,$title,$higher);
     while ($allTopic->fetch()){
         if($higher == null){
-            $class ="high";
+            echo "</tr><tr>";
             $text = $title;
+            echo "<th><a href = \" browse.php?tid=$tid\">$text</a></th></tr><tr>";
         }
         else{
-            $class = "low";
-            $text = "&ensp;--".$title;
+            $text = $title;
+            echo "<td><a href = \" browse.php?tid=$tid\">$text</a></td>";
         }
-        echo "<div class = \"$class\"><a href = \" browse.php?tid=$tid\">$text</a></div>";
     }
+    echo"</tr></table></div>";
 }
 ?>
 <div class = "Footer">

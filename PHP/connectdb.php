@@ -1,6 +1,5 @@
 <?php
 
-//<!-- Example Blog written by Raymond Mui -->
 
 $mysqli = new mysqli("localhost", "root", "root", "QADB");
 
