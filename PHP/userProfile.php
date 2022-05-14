@@ -5,6 +5,7 @@
     <title>Knowledge Universe - User Profile</title>
     <h1>Welcome to Knowledge Universe</h1>
 </div>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
 <style>
     /* Stylesheet 1: */
@@ -13,31 +14,53 @@
         font-family: arial, sans-serif;
         margin: 20px;
         line-height: 26px;
+        border: 20px solid transparent;
     }
-
+    
     .TableWrapper {
         position: relative;
         overflow: auto;
+        
     }
 
-    .top, .bottom {
-        background-color: #04AA6D;
-        color: #ffffff;
+    /* .Top, .Bottom {
+        color: #000000;
         padding: 15px;
+    } */
+
+    #Top{
+        background-color:#eeeeee;
+        display:inline;
+    }
+
+    .NavInfo{
+        display: inline;
     }
 
     .NavItem {
-        background-color: #f1f1f1;
         border: 1px solid #d4d4d4;
         list-style-type: none;
         padding: 2px;
         cursor: pointer;
+        width: 20%;
     }
+
+    /* #Text {
+        font:140%;
+
+    } */
     
+    /* form {
+            margin: 30px auto;
+            width: 500px;
+            border: 3px solid transparent;
+            padding: 20px
+        } */
 
 
     table {
         font-family: arial, sans-serif;
+        align: center;
         border-collapse: collapse;
         width: 100%;
     }
@@ -53,7 +76,6 @@
     }
 
 </style>
-
 <body>
 <?php
     include ("connectdb.php");
@@ -169,8 +191,10 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "Questions asked by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
+                        echo "<h3>
+                            Questions asked by $username are listed below,
+                            you can click on the question id to view the question detail. </h3>
+                            <br />";
                         echo "</div>";
                         
                         echo "<table>";
@@ -221,8 +245,9 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "Question answered by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
+                        echo "<h3> Question answered by $username are listed below,
+                        you can click on the question id to view the question detail. 
+                        </h3> <br />";
                         echo "</div>";
 
                         echo "<table>";
@@ -273,8 +298,9 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "Questions followed by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
+                        echo "<h3> Questions followed by $username are listed below,
+                        you can click on the question id to view the question detail. 
+                        </h3> <br />";
                         echo "</div>";
 
                         echo "<table>";
@@ -326,8 +352,9 @@
                     if ($stmt->num_rows > 0)
                     {
                         echo "<div id = \"Text\">";
-                        echo "Answers liked by $username are listed below, <br />
-                        you can click on the question id to view the question detail. <br />";
+                        echo "<h3> Answers liked by $username are listed below,
+                        you can click on the question id to view the question detail. 
+                        </h3> <br />";
                         echo "</div>";
 
                         echo "<table>";
