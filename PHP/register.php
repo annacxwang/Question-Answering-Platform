@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <!-- Register page of the Q and A platform -->
 <html>
-<title>Knowledge Universe - Register</title>
+<div class = "Header">
+    <title>Knowledge Universe - User Profile</title>
+    <h1>Welcome to Knowledge Universe</h1>
+</div>
 
 <?php
     include ("connectdb.php");
@@ -123,5 +126,8 @@
     $mysqli->close();
 
 ?>
+<div class = "Footer">
+    <a href = "index.php">Index Page</a>
+</div>
 
 </html>

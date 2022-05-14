@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <!--browse by topic page of the Q and A platform -->
 <html>
-<title>Knowledge Universe - Browse By Topic</title>
+<div class = "Header">
+    <title>Knowledge Universe - User Profile</title>
+    <h1>Welcome to Knowledge Universe</h1>
+</div>
 <style>
 .high{
     font-size:30px;
@@ -131,5 +134,7 @@ else{
     }
 }
 ?>
-<a href = "index.php">Index Page</a>
+<div class = "Footer">
+    <a href = "index.php">Index Page</a>
+</div>
 </html>

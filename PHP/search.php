@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <!-- Search functionality of the Q and A platform -->
 <html>
-<title>Knowledge Universe - Search Results</title>
+<div class = "Header">
+    <title>Knowledge Universe - User Profile</title>
+    <h1>Welcome to Knowledge Universe</h1>
+</div>
     <style>
 
 /* The container <div> - needed to position the dropdown content */
@@ -165,8 +168,6 @@ if(isset($_GET["keyword"])){
     
     $stmt->close();
     $mysqli->close();
-
-    echo '<a href = "index.php">Index Page</a>';
 }
 else{
     echo "Search keyword is not set!\nReturning to index page...";
@@ -174,7 +175,9 @@ else{
 }
 
 ?>
-
+<div class = "Footer">
+    <a href = "index.php">Index Page</a>
+</div>
 </body>
 
 </html>

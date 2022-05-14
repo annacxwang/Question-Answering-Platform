@@ -1,8 +1,60 @@
 <!DOCTYPE html>
 
 <html>
-<title>Knowledge Universe - User Profile</title>
+<div class = "Header">
+    <title>Knowledge Universe - User Profile</title>
+    <h1>Welcome to Knowledge Universe</h1>
+</div>
 
+<style>
+    /* Stylesheet 1: */
+    body {
+        font: 100%;
+        font-family: arial, sans-serif;
+        margin: 20px;
+        line-height: 26px;
+    }
+
+    .TableWrapper {
+        position: relative;
+        overflow: auto;
+    }
+
+    .top, .bottom {
+        background-color: #04AA6D;
+        color: #ffffff;
+        padding: 15px;
+    }
+
+    .NavItem {
+        background-color: #f1f1f1;
+        border: 1px solid #d4d4d4;
+        list-style-type: none;
+        padding: 2px;
+        cursor: pointer;
+    }
+    
+
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    td,th{
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        width: 10%;
+    }
+    tr:nth-child(even){
+        background-color: #dddddd;
+        width: 10%;
+    }
+
+</style>
+
+<body>
 <?php
     include ("connectdb.php");
     //$userid = $_SESSION["uid"];
@@ -31,19 +83,42 @@
             $stmt->bind_result($username, $profile, $points,$city,$state,$country);
             if ($stmt->num_rows > 0) 
             {
-                if(!isset($suid)){
-                    echo'<div><a href="login.php">login</a> 
-                    <a href="register.php">register</a> </div>';
+                if(!isset($suid))
+                {
+                    echo"<div class = \"Top\">
+                            <ul class = \"NavInfo\">
+                                
+                                <li class = \"NavItem\">
+                                    <a href=\"login.php\">login</a>
+                                </li> 
+                                
+                                <li class = \"NavItem\">
+                                    <a href=\"register.php\">register</a> 
+                                </li>
+                            </ul>
+                        </div>";
                 }
                 else{
-                    echo"<div>Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a></div> 
-                        <div><a href=\"postQuestion.php\"> Post question</a> <br /> </div>";
-                        echo "<div><a href=\"logout.php\"> Logout </a></div>";
+                    echo"<div class = \"Top\">
+                            <ul class = \"NavInfo\">
+                                <li class = \"NavItem\">    
+                                    Welcome, <a href=\"userProfile.php?uid=$suid\"> $loginusername </a> <br />
+                                </li>
+                                <li class = \"NavItem\">
+                                    <a href=\"logout.php\"> Logout </a> <br />
+                                </li>
+                                <li class = \"NavItem\">
+                                    <a href=\"postQuestion.php\"> Post question</a>
+                                </li>
+                            </ul>
+                        </div>";
                 }
+                
+                echo "<div class = \"TableWrapper\">";
                 $stmt->fetch();
                 echo "<h2>User Profile of $username</h2>";
-
-                echo '<div><table border="2" width="60%">';
+                
+                echo "<div id = \"UserInfo\">";
       
                 if ($points > 1000)
                 {
@@ -58,6 +133,7 @@
                     $status = "Basic";
                 }
 
+                echo "<table>";
                 echo "<tr>
                         <td> User points: </td>
                         <td> $points </td>
@@ -75,9 +151,11 @@
                         <td> $profile </td>
                         </tr>
                         </table>";
-                echo "<br /> <br /></div>";
+                echo "<br /> <br />";
                 $stmt->close();
-
+                echo "</div>";
+                
+                echo "<div id = \"UserQuestion\">";
                 $questions = "select Q.qid, Q.title, Q.qbody, Q.qtime, T.tid,T.title, U.username, Q.followcount
                     from Question Q, Topic T, User U
                     where Q.tid = T.tid and Q.uid = U.uid and Q.uid = ? 
@@ -90,9 +168,12 @@
                     $stmt->bind_result($qid, $title, $qbody, $qtime, $tid,$topic, $username,$follow);
                     if ($stmt->num_rows > 0)
                     {
+                        echo "<div id = \"Text\">";
                         echo "Questions asked by $username are listed below, <br />
                         you can click on the question id to view the question detail. <br />";
-                        echo '<table border="2" width="60%">';
+                        echo "</div>";
+                        
+                        echo "<table>";
                         echo "<tr>";
                         echo "<th> Question topic </th>
                                 <th> Question title </th> 
@@ -116,7 +197,7 @@
                     else
                     {
                         $stmt->close();
-                        echo '<table border="2" width="60%">';
+                        echo "<table>";
                         echo "<tr> <td>
                         $username hasn't asked any question yet <br />
                             
@@ -125,6 +206,8 @@
                         echo "<br /> <br />";
                     }
                 }
+                echo "</div>";
+                echo "<div id = \"UserAnswer\">";
                 $answers = "select A.qid, A.abody, A.atime, U.username, Q.title,T.tid,T.title,A.likes
                             from Answer A, User U, Question Q, Topic T
                             where Q.tid = T.tid and A.uid = U.uid and A.qid = Q.qid and A.uid = ? 
@@ -137,9 +220,12 @@
                     $stmt->bind_result($qid, $abody, $atime, $username, $title,$tid,$topic,$likes);
                     if ($stmt->num_rows > 0)
                     {
+                        echo "<div id = \"Text\">";
                         echo "Question answered by $username are listed below, <br />
                         you can click on the question id to view the question detail. <br />";
-                        echo '<table border="2" width="60%">';
+                        echo "</div>";
+
+                        echo "<table>";
                         echo "<tr>";
                         echo "<th> Question topic</th>
                                 <th> Question title</th>
@@ -162,7 +248,7 @@
                     else
                     {
                         $stmt->close();
-                        echo '<table border="2" width="60%">';
+                        echo "<table>";
                         echo "<tr> <td>
                             $username hasn't answered any question yet <br />
                             
@@ -171,55 +257,63 @@
                         echo "<br /> <br />";
                     }
                 }
-                $following = "select Q.qid, Q.title, Q.qbody, Q.qtime, T.tid,T.title, U.username, Q.followcount
-                from FollowSession F, Question Q, Topic T, User U
-                where F.qid = Q.qid and Q.tid = T.tid and F.uid = U.uid and F.uid = ?
-                order by Q.qtime DESC";
-            if ($stmt = $mysqli->prepare($following))
-            {
-                $stmt->bind_param("s", $userid);
-                $stmt->execute();
-                $stmt->store_result();
-                $stmt->bind_result($qid, $title, $qbody, $qtime, $tid,$topic, $username,$follow);
-                if ($stmt->num_rows > 0)
-                {
-                    echo "Questions followed by $username are listed below, <br />
-                    you can click on the question id to view the question detail. <br />";
-                    echo '<table border="2" width="60%">';
-                    echo "<tr>";
-                    echo "<th> Question topic </th>
-                            <th> Question title </th> 
-                            <th> Question body </th>
-                            <th> Post time </th>
-                            <th> Follow Count </th>
-                            </tr>";
-                    while($stmt->fetch())
-                    {
-                        $qbody = substr($qbody, 0, 50);
-                        echo "<tr>";
-                        echo "<td><a href=\"browse.php?tid=$tid\">$topic</a></td>
-                                <td> <a href= \"questionDetail.php?qid=$qid\">$title </a></td>
-                                <td> $qbody... </td> <td> $qtime </td><td> $follow </td>
-                                </tr>";
-                    }
-                    echo "</table>";
-                    echo "<br /> <br />";
-                    $stmt->close();
-                }
-                else
-                {
-                    $stmt->close();
-                    echo '<table border="2" width="60%">';
-                    echo "<tr> <td>
-                    $username hasn't followed any question yet <br />
-                        
-                        </td> </tr>";
-                    echo "</table>";
-                    echo "<br /> <br />";
-                }
-            }
+                echo "</div>";
 
-            $liking = "select A.qid, A.abody, A.atime, U.username, Q.title,T.tid,T.title,A.likes
+                echo "<div id = \"Userfollow\">";
+                $following = "select Q.qid, Q.title, Q.qbody, Q.qtime, T.tid,T.title, U.username, Q.followcount
+                    from FollowSession F, Question Q, Topic T, User U
+                    where F.qid = Q.qid and Q.tid = T.tid and F.uid = U.uid and F.uid = ?
+                    order by Q.qtime DESC";
+                if ($stmt = $mysqli->prepare($following))
+                {
+                    $stmt->bind_param("s", $userid);
+                    $stmt->execute();
+                    $stmt->store_result();
+                    $stmt->bind_result($qid, $title, $qbody, $qtime, $tid,$topic, $username,$follow);
+                    if ($stmt->num_rows > 0)
+                    {
+                        echo "<div id = \"Text\">";
+                        echo "Questions followed by $username are listed below, <br />
+                        you can click on the question id to view the question detail. <br />";
+                        echo "</div>";
+
+                        echo "<table>";
+                        echo "<tr>";
+                        echo "<th> Question topic </th>
+                                <th> Question title </th> 
+                                <th> Question body </th>
+                                <th> Post time </th>
+                                <th> Follow Count </th>
+                                </tr>";
+                        while($stmt->fetch())
+                        {
+                            $qbody = substr($qbody, 0, 50);
+                            echo "<tr>";
+                            echo "<td><a href=\"browse.php?tid=$tid\">$topic</a></td>
+                                    <td> <a href= \"questionDetail.php?qid=$qid\">$title </a></td>
+                                    <td> $qbody... </td> <td> $qtime </td><td> $follow </td>
+                                    </tr>";
+                        }
+                        echo "</table>";
+                        echo "<br /> <br />";
+                        $stmt->close();
+                    }
+                    else
+                    {
+                        $stmt->close();
+                        echo "<table>";
+                        echo "<tr> <td>
+                        $username hasn't followed any question yet <br />
+                            
+                            </td> </tr>";
+                        echo "</table>";
+                        echo "<br /> <br />";
+                    }
+                }
+                echo "</div>";
+
+                echo "<div id = \"UserLike\">";
+                $liking = "select A.qid, A.abody, A.atime, U.username, Q.title,T.tid,T.title,A.likes
                             from LikeSession L, Answer A, User U, Question Q, Topic T
                             where L.aid = A.aid and Q.tid = T.tid and A.uid = U.uid and A.qid = Q.qid and L.uid = ? 
                             order by A.atime DESC";
@@ -231,9 +325,12 @@
                     $stmt->bind_result($qid, $abody, $atime, $username, $title,$tid,$topic,$likes);
                     if ($stmt->num_rows > 0)
                     {
+                        echo "<div id = \"Text\">";
                         echo "Answers liked by $username are listed below, <br />
                         you can click on the question id to view the question detail. <br />";
-                        echo '<table border="2" width="60%">';
+                        echo "</div>";
+
+                        echo "<table>";
                         echo "<tr>";
                         echo "<th> Question topic</th>
                                 <th> Question title</th>
@@ -256,7 +353,7 @@
                     else
                     {
                         $stmt->close();
-                        echo '<table border="2" width="60%">';
+                        echo "<table>";
                         echo "<tr> <td>
                             $username hasn't liked any answers yet <br />
                             
@@ -265,6 +362,8 @@
                         echo "<br /> <br />";
                     }
                 }
+                echo "</div>";
+                echo "</div>";
 
             }
             else
@@ -279,6 +378,7 @@
         header("refresh: 1; index.php");
     }
 
+    echo "<div class = \"Bottom\">";
     if(isset($_POST["uid"])){
         $userid = $_POST["uid"];
         
@@ -321,16 +421,19 @@
         $tempuid = $_GET["uid"];
         echo "If you want to close your account, please click the following button";
         echo "<form action=\"userProfile.php\" method= \"POST\">";
-        echo "<input type=\"hidden\" name=\"uid\" value=\"$tempuid\" /> <br />";
+        echo "<input type=\"hidden\" name=\"uid\" value=\"$tempuid\" />";
         echo "<input type=\"submit\" name=\"button\" value=\"Close account\" /> <br />";
         echo "</form>";}
     }
+    echo "</div>";
 
     $mysqli->close();
 
 
 ?>
-
-<a href = "index.php">Index Page</a>
+</body>
+<div class = "Footer">
+    <a href = "index.php">Index Page</a>
+</div>
 
 </html>

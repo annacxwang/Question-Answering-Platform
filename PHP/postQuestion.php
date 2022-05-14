@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 
 <html>
-<title>Knowledge Universe - Post Question</title>
+<div class = "Header">
+    <title>Knowledge Universe - User Profile</title>
+    <h1>Welcome to Knowledge Universe</h1>
+</div>
 
 <?php
     include ("connectdb.php");
@@ -90,6 +93,8 @@
 
 
 ?>
-<a href = "index.php">Index Page</a>
+<div class = "Footer">
+    <a href = "index.php">Index Page</a>
+</div>
 
 </html>

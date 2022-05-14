@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <!--Question and Answer detail page of the Q and A platform -->
 <html>
-<title>Knowledge Universe - Question Detail</title>
+<div class = "Header">
+    <title>Knowledge Universe - User Profile</title>
+    <h1>Welcome to Knowledge Universe</h1>
+</div>
 <style>
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
@@ -429,5 +432,7 @@ else{
 }
 $mysqli->close();
 ?>
-<a href = "index.php">Index Page</a>
+<div class = "Footer">
+    <a href = "index.php">Index Page</a>
+</div>
 </html>
