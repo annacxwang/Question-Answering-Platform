@@ -94,7 +94,7 @@ input[type=submit] {
     {
         
 
-        if (!empty($_POST["title"]) && !empty($_POST["qbody"]) && !empty($_POST["tid"]))
+        if (!empty($_POST["title"])  && !empty($_POST["tid"]))
         {
             $checkTitle = "select qid from Question where title = ?";
             //check if username already exists in database
@@ -111,6 +111,10 @@ input[type=submit] {
                     
                 }
             else{
+                if(empty($_POST["qbody"])){
+                    $qbody = NULL;
+                }
+                else{$qbody = $_POST["qbody"];}
             $sql2 = "insert into 
                     Question (uid,tid,title,qbody) 
                     values (?,?,?,?)";
@@ -122,7 +126,7 @@ input[type=submit] {
                         $userid,
                         $_POST["tid"], 
                         $_POST["title"],
-                        $_POST["qbody"]);
+                        $qbody);
                 if(!$stmt->execute()){
                     echo "Error description: ".($stmt -> error)."Returning to index page...";
                     $stmt->close();}
@@ -132,6 +136,29 @@ input[type=submit] {
                 header("refresh: 1; index.php");}
             }
         }
+        }
+        else if ((!empty($_POST["tid"]))){
+            echo"<script>alert('Question title can not be empty!');</script>";
+            //display registration form
+            echo "<h3>Enter your Question below: </h3>\n";
+            echo "<form action=\"postQuestion.php\" method=\"POST\">";
+            echo "Question title: <input type=\"text\" name=\"title\" /> <br />
+                    Question body: <input type=\"text\" name= \"qbody\" /> <br />";
+            echo "Select corresponding topic field:";
+            echo "<select name=\"tid\">";
+            $allTopic = $mysqli->prepare("select * from Topic");
+            $allTopic->execute();
+            $allTopic->bind_result($tid,$title,$higher);
+            while ($allTopic->fetch())
+            {
+                $tidinfo = $tid;
+                $titleinfo = $title;
+                echo "<option value=$tid>$titleinfo</option>";
+            }
+            echo "</select> <br />";
+                    
+            echo "<input type=\"submit\" value= \"Submit\" /> <br />";
+
         }
         else
         {

@@ -8,9 +8,6 @@
      * {
   box-sizing: border-box;
 }
-/* a:link { text-decoration: none; }
-a:visited{color:color:#B22222;}
-a:hover { text-decoration: underline; } */
 
 /* header row */
 .column {
@@ -139,11 +136,9 @@ $host = $_SERVER['HTTP_HOST'];
 
 
 echo '<div class = "row">
-    <div class="column" id = "logo">';
-    //echo '<a href = "index.php" style = "color":#B22222;>Knowledge Universe</a></div>'
-echo 'Knowledge Universe</div>';
+    <div class="column" id = "logo">Knowledge Universe</div>
 
-    echo '<div class = "column" id="search-bar"> <form action="search.php?keyword='.$_GET["keyword"].' method="post">
+    <div class = "column" id="search-bar"> <form action="search.php?keyword='.$_GET["keyword"].' method="post">
     <textarea cols="40" rows="1" name="keyword" placeholder="Enter Search Keyword..."/></textarea>
     <input type="submit" value="Search">
     </form></div>';
