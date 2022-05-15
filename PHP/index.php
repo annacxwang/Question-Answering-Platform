@@ -84,7 +84,6 @@ input[type=submit] {
 include ("connectdb.php");
 
 $userid = $_SESSION["uid"];
-$userid = htmlspecialchars($userid);
 $loginusername = $_SESSION["username"];
 // $loginpassword = $_SESSION["password"];
 echo '<div class = "row">
@@ -120,12 +119,6 @@ $questions = $mysqli->prepare("Select Q.tid,T.title,Q.qid, Q.title, qtime,follow
         echo "<div>No question posted yet!</div>";
           }
        else{
-            $qtid = htmlspecialchars($qtid);    
-            $topic = htmlspecialchars($topic);
-            $qid = htmlspecialchars($qid);
-            $title = htmlspecialchars($title);
-            $time = htmlspecialchars($time);
-            $follow = htmlspecialchars($follow);
                 // Printing results in HTML
        echo "<table>\n";
       // table header + first line
