@@ -151,6 +151,10 @@ input[type=submit] {
             $allTopic->bind_result($tid,$title,$higher);
             while ($allTopic->fetch())
             {
+                $tid = htmlspecialchars($tid);
+                $title = htmlspecialchars($title);
+                $higher = htmlspecialchars($higher);
+
                 $tidinfo = $tid;
                 $titleinfo = $title;
                 echo "<option value=$tid>$titleinfo</option>";
@@ -177,6 +181,10 @@ input[type=submit] {
             $allTopic->bind_result($tid,$title,$higher);
             while ($allTopic->fetch())
             {
+                $tid = htmlspecialchars($tid);
+                $title = htmlspecialchars($title);
+                $higher = htmlspecialchars($higher);
+                
                 $tidinfo = $tid;
                 $titleinfo = $title;
                 echo "<option value=$tid>$titleinfo</option>";

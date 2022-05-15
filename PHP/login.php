@@ -133,6 +133,11 @@ else
             
             if ($stmt->fetch()) 
             {
+                $uid = htmlspecialchars($uid);
+                $username = htmlspecialchars($username);
+                $password = htmlspecialchars($password);
+
+
                 $_SESSION["uid"] = $uid;
                 $_SESSION["username"] = $username;
                 $_SESSION["password"] = $password;

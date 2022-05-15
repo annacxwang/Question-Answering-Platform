@@ -245,6 +245,14 @@ if(isset($_GET["keyword"])){
         echo "<div>No result matching keyword \"".$keyword."\"</div>";
         }
     else{
+        
+        $tid = htmlspecialchars($tid);
+        $topic = htmlspecialchars($topic);
+        $qid = htmlspecialchars($qid);
+        $title = htmlspecialchars($title);
+        $time = htmlspecialchars($time);
+        $follow = htmlspecialchars($follow);
+
         // Printing results in HTML
         echo "<table>\n";
         // table header + first line

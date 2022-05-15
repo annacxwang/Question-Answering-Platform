@@ -145,6 +145,9 @@ if(isset($tid)){
         $topicDetail->close();
         }
     else{
+        $topic = htmlspecialchars($topic);
+        $higherTid = htmlspecialchars($higherTid);
+
         $topicDetail->close();
         if($higherTid == null){
             //current tid is a higher level topic
@@ -165,6 +168,13 @@ if(isset($tid)){
                 echo "<div>No result in this topic!</div>";
                 }
             else{
+                $qtid = htmlspecialchars($qtid);
+                $topic = htmlspecialchars($topic);
+                $qid = htmlspecialchars($qid);
+                $title = htmlspecialchars($title);
+                $time = htmlspecialchars($time);
+                $follow = htmlspecialchars($follow);
+
                 // Printing results in HTML
                 echo "<table>\n";
                 // table header + first line
@@ -198,6 +208,12 @@ if(isset($tid)){
                 echo "<div>No result in this topic!</div>";
                 }
             else{
+                
+                $qid = htmlspecialchars($qid);
+                $title = htmlspecialchars($title);
+                $time = htmlspecialchars($time);
+                $follow = htmlspecialchars($follow);
+
                 // Printing results in HTML
                 echo "<table>\n";
                 // table header + first line
@@ -222,6 +238,9 @@ else{
     $allTopic->execute();
     $allTopic->bind_result($tid,$title,$higher);
     while ($allTopic->fetch()){
+        $tid = htmlspecialchars($tid);
+        $title = htmlspecialchars($title);
+        $higher = htmlspecialchars($higher);
         if($higher == null){
             echo "</tr><tr>";
             $text = $title;

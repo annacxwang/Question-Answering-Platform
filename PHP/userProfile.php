@@ -137,6 +137,14 @@ input[type=submit] {
                 
                 echo "<div class = \"TableWrapper\">";
                 $stmt->fetch();
+
+                $username = htmlspecialchars($username);
+                $profile = htmlspecialchars($profile);
+                $points = htmlspecialchars($points);
+                $city = htmlspecialchars($city);
+                $state = htmlspecialchars($state);
+                $country = htmlspecialchars($country);
+
                 echo "<h2>User Profile of $username</h2>";
                 
                 echo "<div id = \"UserInfo\">";
@@ -204,6 +212,16 @@ input[type=submit] {
                                 </tr>";
                         while($stmt->fetch())
                         {
+                            $qid = htmlspecialchars($qid);
+                            $title = htmlspecialchars($title);
+                            $qbody = htmlspecialchars($qbody);
+                            $qtime = htmlspecialchars($qtime);
+                            $tid = htmlspecialchars($tid);
+                            $topic = htmlspecialchars($topic);
+                            $username = htmlspecialchars($username);
+                            $follow = htmlspecialchars($follow);
+                            
+                            
                             $qbody = substr($qbody, 0, 50);
                             echo "<tr>";
                             echo "<td><a href=\"browse.php?tid=$tid\">$topic</a></td>
@@ -225,6 +243,7 @@ input[type=submit] {
                         echo "</table>";
                     }
                 }
+                
                 echo "</div>";
                 echo "<div id = \"UserAnswer\">";
                 echo "<div id = \"Text\">";
@@ -242,7 +261,14 @@ input[type=submit] {
                     $stmt->bind_result($qid, $abody, $atime, $username, $title,$tid,$topic,$likes);
                     if ($stmt->num_rows > 0)
                     {
-                        
+                        $qid = htmlspecialchars($qid);
+                        $abody = htmlspecialchars($abody);
+                        $atime = htmlspecialchars($atime);
+                        $username = htmlspecialchars($username);
+                        $title = htmlspecialchars($title);
+                        $tid = htmlspecialchars($tid);
+                        $topic = htmlspecialchars($topic);
+                        $likes = htmlspecialchars($likes);
 
                         echo "<table>";
                         echo "<tr>";
@@ -292,8 +318,15 @@ input[type=submit] {
                     $stmt->bind_result($qid, $title, $qbody, $qtime, $tid,$topic, $username,$follow);
                     if ($stmt->num_rows > 0)
                     {
+                        $qid = htmlspecialchars($qid);
+                        $title = htmlspecialchars($title);
+                        $qbody = htmlspecialchars($qbody);
+                        $qtime = htmlspecialchars($qtime);
+                        $tid = htmlspecialchars($tid);
+                        $topic = htmlspecialchars($topic);
+                        $username = htmlspecialchars($username);
+                        $follow = htmlspecialchars($follow);
                         
-
                         echo "<table>";
                         echo "<tr>";
                         echo "<th> Question topic </th>
@@ -342,6 +375,15 @@ input[type=submit] {
                     $stmt->bind_result($qid, $abody, $atime, $username, $title,$tid,$topic,$likes);
                     if ($stmt->num_rows > 0)
                     {
+                        $qid = htmlspecialchars($qid);
+                        $abody = htmlspecialchars($abody);
+                        $atime = htmlspecialchars($atime);
+                        $username = htmlspecialchars($username);
+                        $title = htmlspecialchars($title);
+                        $tid = htmlspecialchars($tid);
+                        $topic = htmlspecialchars($topic);
+                        $likes = htmlspecialchars($likes);
+
                     
 
                         echo "<table>";
